@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ECECE6"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="B-JOURNAL"
+            android:textSize="44sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="IDENTITY REQUIRED."
+            android:background="@android:color/black"
+            android:textColor="#ECECE6"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="4dp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="40dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="USERNAME // USER_ID"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="4dp" />
+
+        <com.example.b_journal.SketchyTapeView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <EditText
+                android:id="@+id/et_user_id"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@android:color/white"
+                android:hint="ENTER.USERNAME@HERE"
+                android:textColorHint="#A0A0A0"
+                android:padding="12dp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:inputType="text" />
+        </com.example.b_journal.SketchyTapeView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PASSWORD // ACCESS_CODE"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="4dp" />
+
+        <com.example.b_journal.SketchyTapeView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:layout_marginBottom="32dp">
+
+            <EditText
+                android:id="@+id/et_access_code"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@android:color/white"
+                android:hint="••••••••"
+                android:textColorHint="#A0A0A0"
+                android:padding="12dp"
+                android:textColor="@android:color/black"
+                android:inputType="textPassword" />
+        </com.example.b_journal.SketchyTapeView>
+
+        <com.example.b_journal.SketchyTapeView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <Button
+                android:id="@+id/btn_authenticate"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:backgroundTint="#C8102E"
+                android:text="AUTHENTICATE"
+                android:textColor="#ECECE6"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:cornerRadius="0dp" />
+        </com.example.b_journal.SketchyTapeView>
+
+    </LinearLayout>
+</ScrollView>
