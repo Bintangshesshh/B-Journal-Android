@@ -1,9 +1,11 @@
-package com.example.b_journal // PASTIKAN PACKAGE INI SAMA KAYAK PUNYA LU
+package com.example.b_journal
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
@@ -13,14 +15,19 @@ import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
+    // Kita deklarasikan di atas biar bisa diakses di semua fungsi dalam class ini
+    private lateinit var progressBar: ProgressBar
+    private lateinit var btnAuthenticate: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // ID di bawah ini sudah disamakan dengan XML murni milik lu, Bin!
+        // Inisialisasi komponen UI dari XML
         val etUserId = findViewById<EditText>(R.id.et_user_id)
         val etAccessCode = findViewById<EditText>(R.id.et_access_code)
-        val btnAuthenticate = findViewById<Button>(R.id.btn_authenticate) // <-- KUNCI SUKSESNYA DI SINI
+        btnAuthenticate = findViewById<Button>(R.id.btn_authenticate)
+        progressBar = findViewById<ProgressBar>(R.id.progress_loading)
 
         btnAuthenticate.setOnClickListener {
             val username = etUserId.text.toString().trim()
@@ -29,6 +36,8 @@ class MainActivity : AppCompatActivity() {
             if (username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Isi kolom login!", Toast.LENGTH_SHORT).show()
             } else {
+                // Aktifkan mode loading pas tombol diklik
+                setLoadingState(true)
                 prosesLoginKeVercel(username, password)
             }
         }
@@ -39,8 +48,8 @@ class MainActivity : AppCompatActivity() {
 
         val dataKirim = JSONObject()
         try {
-            dataKirim.put("Username", user) // U Kapital sesuai database Supabase lu
-            dataKirim.put("Password", pass) // P Kapital sesuai database Supabase lu
+            dataKirim.put("Username", user) // U Kapital sesuai skema DB Supabase lu
+            dataKirim.put("Password", pass) // P Kapital sesuai skema DB Supabase lu
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -49,6 +58,8 @@ class MainActivity : AppCompatActivity() {
         val request = JsonObjectRequest(
             Request.Method.POST, url, dataKirim,
             { response ->
+                // Matikan loading karena data udah dapet balasan
+                setLoadingState(false)
                 try {
                     val status = response.getBoolean("success")
                     if (status) {
@@ -58,6 +69,8 @@ class MainActivity : AppCompatActivity() {
                         val intent = Intent(this, DashboardActivity::class.java)
                         startActivity(intent)
                         finish()
+                    } else {
+                        Toast.makeText(this, "Login Gagal! Akun salah.", Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -65,11 +78,26 @@ class MainActivity : AppCompatActivity() {
                 }
             },
             { error ->
+                // Matikan loading meskipun koneksinya error/gagal
+                setLoadingState(false)
                 error.printStackTrace()
-                Toast.makeText(this, "Login Gagal! Akun tidak cocok.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Login Gagal! Masalah jaringan/akun salah.", Toast.LENGTH_SHORT).show()
             }
         )
 
         queue.add(request)
+    }
+
+    // Fungsi pembantu buat atur visual pas lagi loading biar gak nulis kode berulang
+    private fun setLoadingState(isLoading: Boolean) {
+        if (isLoading) {
+            btnAuthenticate.text = "" // Kosongkan teks biar gak tabrakan sama progress bar
+            progressBar.visibility = View.VISIBLE
+            btnAuthenticate.isEnabled = false // Biar gak bisa diklik berkali-kali pas loading
+        } else {
+            btnAuthenticate.text = "AUTHENTICATE"
+            progressBar.visibility = View.GONE
+            btnAuthenticate.isEnabled = true
+        }
     }
 }

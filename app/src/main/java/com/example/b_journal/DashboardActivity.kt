@@ -45,7 +45,6 @@ class DashboardActivity : AppCompatActivity() {
 
     private fun simpanAlbumKeSupabase(judul: String, deskripsi: String, inputTitle: EditText, inputDesc: EditText) {
         val url = "https://b-journal-34na.vercel.app/api/albums"
-
         val dataKirim = JSONObject()
         try {
             dataKirim.put("title", judul)

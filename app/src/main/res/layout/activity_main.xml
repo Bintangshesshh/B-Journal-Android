@@ -97,16 +97,29 @@
             android:layout_height="wrap_content"
             android:padding="16dp">
 
-            <Button
-                android:id="@+id/btn_authenticate"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:backgroundTint="#C8102E"
-                android:text="AUTHENTICATE"
-                android:textColor="#ECECE6"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:cornerRadius="0dp" />
+                android:layout_height="65dp">
+
+                <Button
+                    android:id="@+id/btn_authenticate"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="#C8102E"
+                    android:text="AUTHENTICATE"
+                    android:textColor="#ECECE6"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="0dp" />
+
+                <ProgressBar
+                    android:id="@+id/progress_loading"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    android:indeterminateTint="#ECECE6" />
+            </FrameLayout>
         </com.example.b_journal.SketchyTapeView>
 
     </LinearLayout>
