@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
@@ -17,6 +18,8 @@ class DashboardActivity : AppCompatActivity() {
 
     private lateinit var albumAdapter: AlbumAdapter
     private val daftarAlbumLocal = ArrayList<Album>()
+    // 1. TAMBAH VARIABEL SWIPE REFRESH DI SINI BIN
+    private lateinit var swipeRefresh: SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +30,9 @@ class DashboardActivity : AppCompatActivity() {
         val btnAddAlbum = findViewById<Button>(R.id.btn_add_album)
         val btnLogout = findViewById<Button>(R.id.btn_logout)
 
+        // 2. INSIALISASI SWIPE REFRESH-NYA
+        swipeRefresh = findViewById(R.id.swipe_refresh)
+
         // Inisialisasi RecyclerView beserta Layout Manager-nya
         val rvAlbums = findViewById<RecyclerView>(R.id.rv_albums)
         rvAlbums.layoutManager = LinearLayoutManager(this)
@@ -36,13 +42,17 @@ class DashboardActivity : AppCompatActivity() {
         // Sedot data dari Supabase pas halaman kebuka pertama kali
         ambilDataFeedDariVercel()
 
+        // 3. PASANG LOGIC PAS LAYAR DITARIK KE BAWAH
+        swipeRefresh.setOnRefreshListener {
+            ambilDataFeedDariVercel() // Panggil fungsi ambil data lagi
+        }
+
         btnAddAlbum.setOnClickListener {
             val title = etAlbumTitle.text.toString().trim()
             val desc = etAlbumDesc.text.toString().trim()
 
             if (title.isEmpty() || desc.isEmpty()) {
-                Toast.makeText(this, "Judul dan Deskripsi wajib diisi, Bin!", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this, "Judul dan Deskripsi wajib diisi!", Toast.LENGTH_SHORT).show()
             } else {
                 btnAddAlbum.isEnabled = false
                 simpanAlbumKeSupabase(title, desc, etAlbumTitle, etAlbumDesc, btnAddAlbum)
@@ -63,13 +73,14 @@ class DashboardActivity : AppCompatActivity() {
         val request = JsonObjectRequest(
             Request.Method.GET, url, null,
             { response ->
+                // 4. MATIKAN LOADING MUTING NYA PAS DATA BERHASIL KESEDOT
+                swipeRefresh.isRefreshing = false
                 try {
                     val success = response.getBoolean("success")
                     if (success) {
                         val jsonArray = response.getJSONArray("data")
                         daftarAlbumLocal.clear()
 
-                        // LOOPING DATA - DISESUAIKAN KEY CAPS-LOCK DARI SUPABASE LU BIN!
                         for (i in 0 until jsonArray.length()) {
                             val item = jsonArray.getJSONObject(i)
                             val album = Album(
@@ -80,7 +91,6 @@ class DashboardActivity : AppCompatActivity() {
                             )
                             daftarAlbumLocal.add(album)
                         }
-                        // Beritahu adapter kalau data baru udah masuk
                         albumAdapter.masukkanDataBaru(daftarAlbumLocal)
                     }
                 } catch (e: Exception) {
@@ -89,9 +99,10 @@ class DashboardActivity : AppCompatActivity() {
                 }
             },
             { error ->
+                // 5. MATIKAN JUGA LOADINGNYA KALAU KONEKSI EROR
+                swipeRefresh.isRefreshing = false
                 error.printStackTrace()
-                Toast.makeText(this, "Gagal memuat feed album dari server!", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this, "Gagal memuat feed album dari server!", Toast.LENGTH_SHORT).show()
             }
         )
         queue.add(request)
@@ -106,7 +117,6 @@ class DashboardActivity : AppCompatActivity() {
     ) {
         val url = "https://b-journal-34na.vercel.app/api/dashboard"
 
-        // 1. PROGRES LOAD: Ubah teks tombol jadi loading & disable klik
         buttonAdd.text = "SAVING TO DATABASE..."
         buttonAdd.isEnabled = false
 
@@ -122,7 +132,6 @@ class DashboardActivity : AppCompatActivity() {
         val request = JsonObjectRequest(
             Request.Method.POST, url, dataKirim,
             { response ->
-                // 2. PROGRES SELESAI: Balikin teks tombol asli
                 buttonAdd.text = "+ Add Album"
                 buttonAdd.isEnabled = true
                 try {
@@ -132,7 +141,6 @@ class DashboardActivity : AppCompatActivity() {
                         inputTitle.text.clear()
                         inputDesc.text.clear()
 
-                        // Auto refresh feed bawah
                         ambilDataFeedDariVercel()
                     }
                 } catch (e: Exception) {
@@ -140,7 +148,6 @@ class DashboardActivity : AppCompatActivity() {
                 }
             },
             { error ->
-                // 3. PROGRES EROR: Balikin teks tombol asli jika gagal
                 buttonAdd.text = "+ Add Album"
                 buttonAdd.isEnabled = true
                 error.printStackTrace()

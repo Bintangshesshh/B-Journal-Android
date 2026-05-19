@@ -1,152 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ECECE6"
-    android:fillViewport="true">
+    android:background="#ECECE6">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="DASHBOARD"
-            android:textSize="38sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            android:layout_marginTop="16dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="MAIN_FEED // CREATE_ALBUM"
-            android:background="@android:color/black"
-            android:textColor="#ECECE6"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="2dp"
-            android:textStyle="bold"
-            android:textSize="12sp"
-            android:layout_marginBottom="32dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="[01] ALBUM_TITLE"
-            android:textColor="@android:color/black"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginBottom="4dp" />
-
-        <com.example.b_journal.SketchyTapeView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:layout_marginBottom="16dp">
+            android:orientation="vertical"
+            android:padding="24dp">
 
-            <EditText
-                android:id="@+id/et_album_title"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:background="@android:color/white"
-                android:hint="ENTER ALBUM NAME..."
-                android:textColorHint="#A0A0A0"
-                android:padding="12dp"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DASHBOARD"
+                android:textSize="38sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MAIN_FEED // CREATE_ALBUM"
+                android:background="@android:color/black"
+                android:textColor="#ECECE6"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="2dp"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:layout_marginBottom="32dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[01] ALBUM_TITLE"
                 android:textColor="@android:color/black"
                 android:textStyle="bold"
-                android:inputType="textCapCharacters" />
-        </com.example.b_journal.SketchyTapeView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="[02] ALBUM_DESCRIPTION"
-            android:textColor="@android:color/black"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginBottom="4dp" />
-
-        <com.example.b_journal.SketchyTapeView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:layout_marginBottom="24dp">
-
-            <EditText
-                android:id="@+id/et_album_desc"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:background="@android:color/white"
-                android:hint="WRITE STORY OR DESCRIPTION..."
-                android:textColorHint="#A0A0A0"
-                android:gravity="top|left"
-                android:padding="12dp"
-                android:textColor="@android:color/black"
-                android:textStyle="bold"
-                android:inputType="textMultiLine" />
-        </com.example.b_journal.SketchyTapeView>
-
-        <com.example.b_journal.SketchyTapeView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:layout_marginBottom="16dp">
-
-            <Button
-                android:id="@+id/btn_add_album"
-                android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:backgroundTint="#C8102E"
-                android:text="+ Add Album"
-                android:textColor="#ECECE6"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:cornerRadius="0dp" />
-        </com.example.b_journal.SketchyTapeView>
-
-        <com.example.b_journal.SketchyTapeView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp">
-
-            <Button
-                android:id="@+id/btn_logout"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:backgroundTint="@android:color/black"
-                android:text="LEAVE_SESSION (LOGOUT)"
-                android:textColor="#ECECE6"
                 android:textSize="14sp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginBottom="4dp" />
+
+            <com.example.b_journal.SketchyTapeView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <EditText
+                    android:id="@+id/et_album_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:background="@android:color/white"
+                    android:hint="ENTER ALBUM NAME..."
+                    android:textColorHint="#A0A0A0"
+                    android:padding="12dp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:inputType="textCapCharacters" />
+            </com.example.b_journal.SketchyTapeView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[02] ALBUM_DESCRIPTION"
+                android:textColor="@android:color/black"
                 android:textStyle="bold"
-                app:cornerRadius="0dp" />
-        </com.example.b_journal.SketchyTapeView>
+                android:textSize="14sp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginBottom="4dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="MAIN_FEED // EXPLORE_ALBUM"
-            android:background="@android:color/black"
-            android:textColor="#ECECE6"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="4dp"
-            android:textStyle="bold"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="16dp" />
+            <com.example.b_journal.SketchyTapeView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:layout_marginBottom="24dp">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_albums"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            android:layout_marginBottom="24dp" />
+                <EditText
+                    android:id="@+id/et_album_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:background="@android:color/white"
+                    android:hint="WRITE STORY OR DESCRIPTION..."
+                    android:textColorHint="#A0A0A0"
+                    android:gravity="top|left"
+                    android:padding="12dp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:inputType="textMultiLine" />
+            </com.example.b_journal.SketchyTapeView>
 
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+            <com.example.b_journal.SketchyTapeView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <Button
+                    android:id="@+id/btn_add_album"
+                    android:layout_width="match_parent"
+                    android:layout_height="65dp"
+                    android:backgroundTint="#C8102E"
+                    android:text="+ Add Album"
+                    android:textColor="#ECECE6"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="0dp" />
+            </com.example.b_journal.SketchyTapeView>
+
+            <com.example.b_journal.SketchyTapeView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+
+                <Button
+                    android:id="@+id/btn_logout"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:backgroundTint="@android:color/black"
+                    android:text="LEAVE_SESSION (LOGOUT)"
+                    android:textColor="#ECECE6"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="0dp" />
+            </com.example.b_journal.SketchyTapeView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MAIN_FEED // EXPLORE_ALBUM"
+                android:background="@android:color/black"
+                android:textColor="#ECECE6"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="16dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_albums"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:layout_marginBottom="24dp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

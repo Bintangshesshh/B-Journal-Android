@@ -36,6 +36,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0")
     implementation(libs.volley)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
