@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ECECE6"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CREATE ALBUM"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PUSH_NEW_DATA // TO_SUPABASE"
+        android:background="@android:color/black"
+        android:textColor="#ECECE6"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="2dp"
+        android:textStyle="bold"
+        android:textSize="11sp"
+        android:layout_marginBottom="32dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="[01] ALBUM_TITLE"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="4dp" />
+
+    <com.example.b_journal.SketchyTapeView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_marginBottom="16dp">
+
+        <EditText
+            android:id="@+id/et_new_title"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="@android:color/white"
+            android:hint="ENTER ALBUM NAME..."
+            android:textColorHint="#A0A0A0"
+            android:padding="12dp"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:inputType="textCapCharacters" />
+    </com.example.b_journal.SketchyTapeView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="[02] ALBUM_DESCRIPTION"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="4dp" />
+
+    <com.example.b_journal.SketchyTapeView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_marginBottom="24dp">
+
+        <EditText
+            android:id="@+id/et_new_desc"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@android:color/white"
+            android:hint="WRITE STORY OR DESCRIPTION..."
+            android:textColorHint="#A0A0A0"
+            android:gravity="top|left"
+            android:padding="12dp"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:inputType="textMultiLine" />
+    </com.example.b_journal.SketchyTapeView>
+
+    <com.example.b_journal.SketchyTapeView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/btn_submit_album"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:backgroundTint="#C8102E"
+            android:text="+ Add Album"
+            android:textColor="#ECECE6"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:cornerRadius="0dp" />
+    </com.example.b_journal.SketchyTapeView>
+
+</LinearLayout>

@@ -14,6 +14,22 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@android:color/black"
+            android:padding="3dp"
+            android:layout_marginBottom="12dp">
+
+            <ImageView
+                android:id="@+id/iv_item_cover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#D0D0D0"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_gallery" />
+        </FrameLayout>
+
         <TextView
             android:id="@+id/tv_item_title"
             android:layout_width="wrap_content"
