@@ -1,5 +1,5 @@
 package com.example.b_journal
-
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +29,6 @@ class AlbumAdapter(private var listAlbum: ArrayList<Album>) :
         holder.tvDesc.text = album.deskripsi
         holder.tvDate.text = "// POSTED_AT: ${album.tanggalDibuat}"
 
-        // PROSES DRAWING GAMBAR SUPABASE PAKE GLIDE COK!
         if (album.urlGambar.isNotEmpty()) {
             Glide.with(holder.itemView.context)
                 .load(album.urlGambar)
@@ -39,6 +38,16 @@ class AlbumAdapter(private var listAlbum: ArrayList<Album>) :
                 .into(holder.ivCover)
         } else {
             holder.ivCover.setImageResource(android.R.drawable.ic_menu_gallery)
+        }
+
+        // Logic klik pindah ke halaman DetailAlbumActivity
+        holder.itemView.setOnClickListener {
+            val intent = Intent(holder.itemView.context, DetailAlbumActivity::class.java).apply {
+                putExtra("ALBUM_ID", album.id)
+                putExtra("ALBUM_NAME", album.namaAlbum)
+                putExtra("ALBUM_DESC", album.deskripsi)
+            }
+            holder.itemView.context.startActivity(intent)
         }
     }
 

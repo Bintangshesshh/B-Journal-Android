@@ -15,7 +15,7 @@ import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
-    // Kita deklarasikan di atas biar bisa diakses di semua fungsi dalam class ini
+    // Deklarasikan di atas biar bisa diakses di semua fungsi dalam class ini
     private lateinit var progressBar: ProgressBar
     private lateinit var btnAuthenticate: Button
 
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             if (username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Isi kolom login!", Toast.LENGTH_SHORT).show()
             } else {
-                // Aktifkan mode loading pas tombol diklik
+                // Aktifkan loading pas tombol diklik
                 setLoadingState(true)
                 prosesLoginKeVercel(username, password)
             }
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                 }
             },
             { error ->
-                // Matikan loading meskipun koneksinya error/gagal
+                // Matikan loading meskipun koneksinya error
                 setLoadingState(false)
                 error.printStackTrace()
                 Toast.makeText(this, "Login Gagal! Masalah jaringan/akun salah.", Toast.LENGTH_SHORT).show()

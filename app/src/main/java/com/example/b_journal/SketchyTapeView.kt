@@ -10,7 +10,7 @@ class SketchyTapeView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr) {
 
-    // Spidol Hitam Utama (Dibuat agak bleber pake Miter)
+    // Spidol Hitam Utama
     private val sketchyBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.BLACK
         style = Paint.Style.STROKE
@@ -19,20 +19,20 @@ class SketchyTapeView @JvmOverloads constructor(
         strokeJoin = Paint.Join.MITER
     }
 
-    // Arsiran pulpen coret-coret tipis di dalam box/tombol
+    // Arsiran pulpen coret-coret tipis di dalam box
     private val hatchPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.parseColor("#33000000") // Hitam transparan buat arsiran
         style = Paint.Style.STROKE
         strokeWidth = 3f
     }
 
-    // Shadow Kaku Brutalist
+    // Shadow Kaku
     private val hardShadowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.BLACK
         style = Paint.Style.FILL
     }
 
-    // Lakban Kumal Abu-abu Serat Kasar
+    // Lakban Abu-abu Kasar
     private val tapePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.parseColor("#558A8A85")
         style = Paint.Style.FILL
@@ -79,32 +79,31 @@ class SketchyTapeView @JvmOverloads constructor(
         val b = child.bottom.toFloat()
         val offsetShadow = 20f // Shadow dibuat lebih tebal menjauh
 
-        // 1. SHADOW BRUTALIST KAKU
+        // SHADOW
         shadowPath.reset()
         makeSuperSketchyRect(shadowPath, l + offsetShadow, t + offsetShadow, r + offsetShadow, b + offsetShadow, 3f)
         canvas.drawPath(shadowPath, hardShadowPaint)
 
-        // 2. ARSIRAN SILANG JADUL (Cross-hatching) DI BELAKANG ELEMEN
+        // ARSIRAN
         drawCrossHatch(canvas, l, t, r, b)
 
-        // 3. BORDER UTAMA LAPISAN 1 (Garis Compang-Camping)
+        // BORDER UTAMA LAPISAN 1
         path.reset()
         makeSuperSketchyRect(path, l, t, r, b, 6f)
         canvas.drawPath(path, sketchyBorderPaint)
 
-        // 4. BORDER LAPISAN 2 (Ditembak ulang biar kayak ditimpa pulpen berkali-kali)
+        // BORDER LAPISAN 2
         extraPath.reset()
         makeSuperSketchyRect(extraPath, l - 2f, t + 2f, r + 2f, b - 2f, 5f)
         canvas.drawPath(extraPath, sketchyBorderPaint)
 
-        // 5. LAKBAN JLEB (Ujung robek bergerigi)
+        // LAKBAN
         drawTornTape(canvas, l + 30f, t, -20f) // Lakban Atas
         drawTornTape(canvas, r - 50f, b, 25f)  // Lakban Bawah
     }
 
-    // Fungsi bikin garis bener-bener hancur & meliuk ekstrem
     private fun makeSuperSketchyRect(p: Path, left: Float, top: Float, right: Float, bottom: Float, maxDev: Float) {
-        val segments = 16 // Segmen ditambah biar liukan makin detail
+        val segments = 16 // Segmen ditambah biar makin detail
         p.moveTo(left, top)
 
         // Atas

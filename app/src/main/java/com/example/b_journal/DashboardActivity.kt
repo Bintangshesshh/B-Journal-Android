@@ -45,12 +45,12 @@ class DashboardActivity : AppCompatActivity() {
         // Ambil data pas pertama masuk
         ambilDataFeedDariVercel()
 
-        // Logic ditarik ke bawah (Swipe to Refresh)
+        // Logic ditarik ke bawah
         swipeRefresh.setOnRefreshListener {
             ambilDataFeedDariVercel()
         }
 
-        // KRETEK! Pindah ke halaman input pas FAB di klik
+        // Pindah ke halaman input pas di klik
         fabAddAlbum.setOnClickListener {
             val intent = Intent(this, AddAlbumActivity::class.java)
             launcherAddAlbum.launch(intent)
@@ -80,19 +80,26 @@ class DashboardActivity : AppCompatActivity() {
                         for (i in 0 until jsonArray.length()) {
                             val item = jsonArray.getJSONObject(i)
 
-                            // 1. KITA SEDOT URL GAMBAR DARI KEY "LokasiFile" COK!
-                            // Pake optString biar kalau datanya null/kosong aplikasinya gak crash
-                            val fotoUrl = item.optString("LokasiFile", "")
+                            // 1. AMBIL ARRAY "foto" DARI JSON hasil join
+                            val fotoArray = item.optJSONArray("foto")
+
+                            // 2. AMBIL URL FOTO PERTAMA JIKA ADA
+                            val fotoUrl = if (fotoArray != null && fotoArray.length() > 0) {
+                                fotoArray.getJSONObject(0).optString("LokasiFile", "")
+                            } else {
+                                ""
+                            }
 
                             val album = Album(
                                 id = item.getInt("AlbumID"),
                                 namaAlbum = item.getString("NamaAlbum"),
                                 deskripsi = item.getString("Deskripsi"),
                                 tanggalDibuat = item.getString("TanggalDibuat"),
-                                urlGambar = fotoUrl // 👈 KITA MASUKIN KE MODEL DATA ALBUM
+                                urlGambar = fotoUrl
                             )
                             daftarAlbumLocal.add(album)
                         }
+
                         albumAdapter.masukkanDataBaru(daftarAlbumLocal)
                     }
                 } catch (e: Exception) {
