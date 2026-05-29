@@ -39,6 +39,11 @@
         <activity
             android:name=".DetailAlbumActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".UploadFotoActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

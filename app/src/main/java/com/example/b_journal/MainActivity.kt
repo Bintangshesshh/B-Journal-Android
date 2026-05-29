@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.android.volley.AuthFailureError
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
@@ -15,7 +16,6 @@ import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
-    // Deklarasikan di atas biar bisa diakses di semua fungsi dalam class ini
     private lateinit var progressBar: ProgressBar
     private lateinit var btnAuthenticate: Button
 
@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Inisialisasi komponen UI dari XML
         val etUserId = findViewById<EditText>(R.id.et_user_id)
         val etAccessCode = findViewById<EditText>(R.id.et_access_code)
         btnAuthenticate = findViewById<Button>(R.id.btn_authenticate)
@@ -36,7 +35,6 @@ class MainActivity : AppCompatActivity() {
             if (username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Isi kolom login!", Toast.LENGTH_SHORT).show()
             } else {
-                // Aktifkan loading pas tombol diklik
                 setLoadingState(true)
                 prosesLoginKeVercel(username, password)
             }
@@ -48,52 +46,75 @@ class MainActivity : AppCompatActivity() {
 
         val dataKirim = JSONObject()
         try {
-            dataKirim.put("Username", user) // U Kapital sesuai skema DB Supabase lu
-            dataKirim.put("Password", pass) // P Kapital sesuai skema DB Supabase lu
+            dataKirim.put("username", user)
+            dataKirim.put("password", pass)
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
         val queue = Volley.newRequestQueue(this)
-        val request = JsonObjectRequest(
+        val request = object : JsonObjectRequest(
             Request.Method.POST, url, dataKirim,
             { response ->
-                // Matikan loading karena data udah dapet balasan
                 setLoadingState(false)
                 try {
                     val status = response.getBoolean("success")
                     if (status) {
-                        Toast.makeText(this, "Menyala Sombong! Login Sukses!", Toast.LENGTH_SHORT).show()
+                        val userObj = response.getJSONObject("user")
+                        val namaLengkap = userObj.optString("NamaLengkap", "User")
 
-                        // Pindah ke Dashboard Activity
+                        Toast.makeText(this, "Menyala Sombong! Halo $namaLengkap!", Toast.LENGTH_SHORT).show()
+
                         val intent = Intent(this, DashboardActivity::class.java)
                         startActivity(intent)
                         finish()
                     } else {
-                        Toast.makeText(this, "Login Gagal! Akun salah.", Toast.LENGTH_SHORT).show()
+                        // 🔴 BIAR KETAHUAN ALASANNYA: Ambil pesan eror asli dari Next.js lu
+                        val msg = response.optString("message", "Login Gagal!")
+                        Toast.makeText(this, "Server: $msg", Toast.LENGTH_LONG).show()
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    Toast.makeText(this, "Format data dari server salah!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Format respon bermasalah!", Toast.LENGTH_SHORT).show()
                 }
             },
             { error ->
-                // Matikan loading meskipun koneksinya error
                 setLoadingState(false)
                 error.printStackTrace()
-                Toast.makeText(this, "Login Gagal! Masalah jaringan/akun salah.", Toast.LENGTH_SHORT).show()
+
+                // 🔴 PARSING EROR JIKA SERVER BALIKIN STATUS CODE 401/400/500
+                val responseBody = error.networkResponse?.data?.let { String(it) }
+                if (!responseBody.isNullOrEmpty()) {
+                    try {
+                        val jsonErr = JSONObject(responseBody)
+                        val serverMsg = jsonErr.optString("message", "Eror tidak diketahui")
+                        Toast.makeText(this, "Eror $serverMsg", android.widget.Toast.LENGTH_LONG).show()
+                    } catch (e: Exception) {
+                        Toast.makeText(this, "Koneksi Bermasalah!", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this, "Gagal koneksi ke server, Bin!", Toast.LENGTH_SHORT).show()
+                }
             }
-        )
+        ) {
+            // 🔴 MEMAKSA VOLLEY MENGIRIM HEADER JSON BIAR NEXT.JS GAK BINGUNG
+            @Throws(AuthFailureError::class)
+            override fun getHeaders(): Map<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Content-Type"] = "application/json; charset=utf-8"
+                headers["Accept"] = "application/json"
+                return headers
+            }
+        }
 
         queue.add(request)
     }
 
-    // Fungsi pembantu buat atur visual pas lagi loading biar gak nulis kode berulang
     private fun setLoadingState(isLoading: Boolean) {
         if (isLoading) {
-            btnAuthenticate.text = "" // Kosongkan teks biar gak tabrakan sama progress bar
+            btnAuthenticate.text = ""
             progressBar.visibility = View.VISIBLE
-            btnAuthenticate.isEnabled = false // Biar gak bisa diklik berkali-kali pas loading
+            btnAuthenticate.isEnabled = false
         } else {
             btnAuthenticate.text = "AUTHENTICATE"
             progressBar.visibility = View.GONE

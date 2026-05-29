@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="#FFFFFF">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="UPLOAD FOTO BARU"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:layout_marginBottom="20dp" />
+
+    <ImageView
+        android:id="@+id/iv_preview"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="#EEEEEE"
+        android:scaleType="centerCrop"
+        android:src="@android:drawable/ic_menu_gallery"
+        android:padding="10dp" />
+
+    <Button
+        android:id="@+id/btn_pilih_foto"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="PILIH DARI GALERI"
+        android:backgroundTint="#FF0000"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp" />
+
+    <Button
+        android:id="@+id/btn_upload"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="SIMPAN KE ALBUM"
+        android:backgroundTint="#000000"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp" />
+
+</LinearLayout>

@@ -1,5 +1,6 @@
 package com.example.b_journal
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -25,7 +26,7 @@ class AddAlbumActivity : AppCompatActivity() {
             val desc = etNewDesc.text.toString().trim()
 
             if (title.isEmpty() || desc.isEmpty()) {
-                Toast.makeText(this, "Judul dan Deskripsi gak boleh kosong, Bin!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Judul dan Deskripsi gak boleh kosong!", Toast.LENGTH_SHORT).show()
             } else {
                 kirimDataKeSupabase(title, desc, btnSubmitAlbum)
             }
@@ -35,7 +36,7 @@ class AddAlbumActivity : AppCompatActivity() {
     private fun kirimDataKeSupabase(judul: String, deskripsi: String, buttonSubmit: Button) {
         val url = "https://b-journal-34na.vercel.app/api/dashboard"
 
-        // Efek loading pas submit
+        // Efek loading pas submit gaya brutalist
         buttonSubmit.text = "SAVING TO DATABASE..."
         buttonSubmit.isEnabled = false
 
@@ -56,16 +57,38 @@ class AddAlbumActivity : AppCompatActivity() {
                 try {
                     val success = response.getBoolean("success")
                     if (success) {
-                        Toast.makeText(this, "Album Sukses Dibuat!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Album Berhasil Dibuat!", Toast.LENGTH_SHORT).show()
 
-                        // Tutup halaman ini dan balik ke Dashboard otomatis
-                        setResult(RESULT_OK)
+                        if (response.has("data")) {
+                            val data = response.getJSONObject("data")
+                            if (data.has("AlbumID")) {
+                                val newAlbumId = data.getInt("AlbumID")
+
+                                val intent = Intent(this, UploadFotoActivity::class.java).apply {
+                                    putExtra("NEW_ALBUM_ID", newAlbumId)
+                                }
+                                startActivity(intent)
+                                finish()
+                                return@JsonObjectRequest
+                            }
+                        }
                         finish()
+
+                    } else {
+                        Toast.makeText(this, "Gagal membuat album di server!", Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    Toast.makeText(this, "Respon server bermasalah, tapi album aman!", Toast.LENGTH_SHORT).show()
+                    finish()
                 }
             },
+
+
+
+
+
+
             { error ->
                 buttonSubmit.text = "+ Add Album"
                 buttonSubmit.isEnabled = true

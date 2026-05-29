@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Deskripsi album di sini..."
-            android:textColor="#FFFF00"
+            android:textColor="#FF0000"
             android:textSize="14sp"
             android:layout_marginTop="4dp" />
     </LinearLayout>
