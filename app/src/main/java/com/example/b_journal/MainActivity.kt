@@ -19,10 +19,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var btnAuthenticate: Button
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreate(bundle: Bundle?) {
+        super.onCreate(bundle)
+        // Memastikan mengarah ke activity_main.xml yang sudah diperbaiki
         setContentView(R.layout.activity_main)
 
+        // ID disesuaikan 100% dengan activity_main.xml terbaru
         val etUserId = findViewById<EditText>(R.id.et_user_id)
         val etAccessCode = findViewById<EditText>(R.id.et_access_code)
         btnAuthenticate = findViewById<Button>(R.id.btn_authenticate)
@@ -69,7 +71,6 @@ class MainActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     } else {
-                        // 🔴 BIAR KETAHUAN ALASANNYA: Ambil pesan eror asli dari Next.js lu
                         val msg = response.optString("message", "Login Gagal!")
                         Toast.makeText(this, "Server: $msg", Toast.LENGTH_LONG).show()
                     }
@@ -82,13 +83,12 @@ class MainActivity : AppCompatActivity() {
                 setLoadingState(false)
                 error.printStackTrace()
 
-                // 🔴 PARSING EROR JIKA SERVER BALIKIN STATUS CODE 401/400/500
                 val responseBody = error.networkResponse?.data?.let { String(it) }
                 if (!responseBody.isNullOrEmpty()) {
                     try {
                         val jsonErr = JSONObject(responseBody)
                         val serverMsg = jsonErr.optString("message", "Eror tidak diketahui")
-                        Toast.makeText(this, "Eror $serverMsg", android.widget.Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "Eror: $serverMsg", Toast.LENGTH_LONG).show()
                     } catch (e: Exception) {
                         Toast.makeText(this, "Koneksi Bermasalah!", Toast.LENGTH_SHORT).show()
                     }
@@ -97,7 +97,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         ) {
-            // 🔴 MEMAKSA VOLLEY MENGIRIM HEADER JSON BIAR NEXT.JS GAK BINGUNG
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String> {
                 val headers = HashMap<String, String>()

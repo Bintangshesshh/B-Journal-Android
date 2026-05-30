@@ -1,73 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:backgroundColor="#FFFFFF">
+    android:fillViewport="true"
+    android:background="#ECECE6">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="MANAGE ALBUM"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#000000"
-        android:layout_marginBottom="32dp"
-        android:gravity="center"/>
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="EDIT TITLE"
-        android:textStyle="bold"
-        android:textColor="#000000"
-        android:layout_marginBottom="8dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MANAGE ALBUM"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="16dp" />
 
-    <EditText
-        android:id="@+id/et_edit_title"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@android:drawable/edit_text"
-        android:paddingLeft="12dp"
-        android:layout_marginBottom="20dp"
-        android:inputType="text"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MANIPULATE_DATA // FROM_SUPABASE"
+            android:background="@android:color/black"
+            android:textColor="#ECECE6"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="2dp"
+            android:textStyle="bold"
+            android:textSize="11sp"
+            android:layout_marginBottom="32dp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="EDIT DESCRIPTION"
-        android:textStyle="bold"
-        android:textColor="#000000"
-        android:layout_marginBottom="8dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[01] EDIT_ALBUM_TITLE"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="4dp" />
 
-    <EditText
-        android:id="@+id/et_edit_desc"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@android:drawable/edit_text"
-        android:padding="12dp"
-        android:gravity="top"
-        android:layout_marginBottom="32dp"
-        android:inputType="textMultiLine"/>
+        <com.example.b_journal.SketchyTapeView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
 
-    <Button
-        android:id="@+id/btn_update_album"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="SAVE CHANGES"
-        android:backgroundTint="#000000"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+            <EditText
+                android:id="@+id/et_edit_title"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@android:color/white"
+                android:hint="ENTER ALBUM NAME..."
+                android:textColorHint="#A0A0A0"
+                android:padding="12dp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:inputType="textCapCharacters" />
+        </com.example.b_journal.SketchyTapeView>
 
-    <Button
-        android:id="@+id/btn_delete_album"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="DELETE ALBUM"
-        android:backgroundTint="#FF0000"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[02] EDIT_ALBUM_DESCRIPTION"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="4dp" />
 
-</LinearLayout>
+        <com.example.b_journal.SketchyTapeView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp">
+
+            <EditText
+                android:id="@+id/et_edit_desc"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:background="@android:color/white"
+                android:hint="WRITE STORY OR DESCRIPTION..."
+                android:textColorHint="#A0A0A0"
+                android:gravity="top|left"
+                android:padding="12dp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:inputType="textMultiLine" />
+        </com.example.b_journal.SketchyTapeView>
+
+        <com.example.b_journal.SketchyTapeView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <Button
+                android:id="@+id/btn_update_album"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:backgroundTint="#C8102E"
+                android:text="+ Save Changes"
+                android:textColor="#ECECE6"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:cornerRadius="0dp" />
+        </com.example.b_journal.SketchyTapeView>
+
+        <com.example.b_journal.SketchyTapeView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <Button
+                android:id="@+id/btn_delete_album"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:backgroundTint="@android:color/black"
+                android:text="- Delete Album"
+                android:textColor="#ECECE6"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:cornerRadius="0dp" />
+        </com.example.b_journal.SketchyTapeView>
+
+    </LinearLayout>
+</ScrollView>

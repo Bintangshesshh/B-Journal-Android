@@ -23,10 +23,12 @@ class EditDeleteAlbumActivity : AppCompatActivity() {
         val btnUpdateAlbum = findViewById<Button>(R.id.btn_update_album)
         val btnDeleteAlbum = findViewById<Button>(R.id.btn_delete_album)
 
+        // 🟢 FIX PERBAIKAN DI SINI, BIN! Semuanya memanggil objek 'intent'
         albumId = intent.getIntExtra("ALBUM_ID", 0)
         etEditTitle.setText(intent.getStringExtra("ALBUM_TITLE"))
-        etEditDesc.getStringExtra("ALBUM_DESC")?.let { etEditDesc.setText(it) }
+        etEditDesc.setText(intent.getStringExtra("ALBUM_DESC")) // 👈 Jauh lebih ringkas & bener!
 
+        // 🛠️ AKSI 1: TOMBOL UPDATE (PUT METHOD)
         btnUpdateAlbum.setOnClickListener {
             val title = etEditTitle.text.toString().trim()
             val desc = etEditDesc.text.toString().trim()
@@ -38,6 +40,7 @@ class EditDeleteAlbumActivity : AppCompatActivity() {
             }
         }
 
+        // 🗑️ AKSI 2: TOMBOL DELETE (DELETE METHOD)
         btnDeleteAlbum.setOnClickListener {
             eksekusiDelete()
         }
@@ -56,9 +59,13 @@ class EditDeleteAlbumActivity : AppCompatActivity() {
         val request = JsonObjectRequest(
             Request.Method.PUT, url, dataKirim,
             { response ->
-                if (response.getBoolean("success")) {
-                    Toast.makeText(this, "Album Berhasil Diubah!", Toast.LENGTH_SHORT).show()
-                    finish() // Kembali ke dashboard dengan sukses
+                try {
+                    if (response.getBoolean("success")) {
+                        Toast.makeText(this, "Album Berhasil Diubah!", Toast.LENGTH_SHORT).show()
+                        finish() // Kembali ke dashboard dengan sukses
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             },
             { Toast.makeText(this, "Gagal meng-update album!", Toast.LENGTH_SHORT).show() }
@@ -73,9 +80,13 @@ class EditDeleteAlbumActivity : AppCompatActivity() {
         val request = JsonObjectRequest(
             Request.Method.DELETE, url, null,
             { response ->
-                if (response.getBoolean("success")) {
-                    Toast.makeText(this, "Album Telah Dihapus!", Toast.LENGTH_SHORT).show()
-                    finish() // Tutup halaman, otomatis terhapus dari list dashboard
+                try {
+                    if (response.getBoolean("success")) {
+                        Toast.makeText(this, "Album Telah Dihapus!", Toast.LENGTH_SHORT).show()
+                        finish() // Tutup halaman, balik ke dashboard
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             },
             { Toast.makeText(this, "Gagal menghapus album!", Toast.LENGTH_SHORT).show() }
