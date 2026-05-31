@@ -17,6 +17,8 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var rvAlbums: RecyclerView
     private lateinit var albumAdapter: AlbumAdapter
     private var daftarAlbumLocal = ArrayList<Album>()
+
+    // Variabel tunggal untuk antrian Volley agar hemat RAM
     private lateinit var requestQueue: RequestQueue
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,21 +29,22 @@ class DashboardActivity : AppCompatActivity() {
         val btnAddAlbum = findViewById<Button>(R.id.fab_add_album)
         rvAlbums = findViewById(R.id.rv_albums)
 
-        // 2. SETUP RECYCLER VIEW
+        // 2. SETUP RECYCLER VIEW (GRID 2 KOLOM)
         rvAlbums.layoutManager = GridLayoutManager(this, 2)
         albumAdapter = AlbumAdapter(daftarAlbumLocal)
         rvAlbums.adapter = albumAdapter
 
-        // 3. INITIALIZE VOLLEY QUEUE
+        // 3. INITIALIZE VOLLEY QUEUE (Cuma sekali pas halaman dibuat)
         requestQueue = Volley.newRequestQueue(this)
 
-        // 4. AKSI TOMBOL TAMBAH ALBUM
+        // 4. AKSI TOMBOL TAMBAH ALBUM (+)
         btnAddAlbum.setOnClickListener {
             val intent = Intent(this, AddAlbumActivity::class.java)
             startActivity(intent)
         }
     }
 
+    // Refresh data otomatis tiap kali user kembali ke halaman ini
     override fun onResume() {
         super.onResume()
         ambilDataDashboard()
@@ -66,10 +69,20 @@ class DashboardActivity : AppCompatActivity() {
                             val judul = item.getString("NamaAlbum")
                             val deskripsi = item.getString("Deskripsi")
                             val tanggalDibuat = item.optString("TanggalDibuat", "No Date")
-                            val urlGambar = item.optString("urlGambar", "")
 
+                            // 🟢 FIX UTAMA: Bongkar array "foto" untuk ngambil item pertama jadi thumbnail
+                            var urlGambar = ""
+                            val fotoArray = item.optJSONArray("foto")
+                            if (fotoArray != null && fotoArray.length() > 0) {
+                                val fotoPertama = fotoArray.getJSONObject(0)
+                                urlGambar = fotoPertama.optString("LokasiFile", "")
+                            }
+
+                            // Masukkan ke local list dengan URL gambar yang valid dari API
                             daftarAlbumLocal.add(Album(id, judul, deskripsi, tanggalDibuat, urlGambar))
                         }
+
+                        // Kirim data baru ke adapter agar layout diperbarui
                         albumAdapter.masukkanDataBaru(daftarAlbumLocal)
                     }
                 } catch (e: Exception) {
@@ -82,6 +95,7 @@ class DashboardActivity : AppCompatActivity() {
                 Toast.makeText(this, "Eror koneksi ke server", Toast.LENGTH_SHORT).show()
             }
         )
+        // Masukkan ke antrian tunggal requestQueue
         requestQueue.add(request)
     }
 }
