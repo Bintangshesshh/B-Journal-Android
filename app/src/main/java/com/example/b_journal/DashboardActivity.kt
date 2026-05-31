@@ -12,7 +12,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -34,7 +33,8 @@ class DashboardActivity : AppCompatActivity() {
         setContentView(R.layout.activity_dashboard)
 
         val btnLogout = findViewById<Button>(R.id.btn_logout)
-        val fabAddAlbum = findViewById<FloatingActionButton>(R.id.fab_add_album)
+        // 🔴 FIX: Udah diganti jadi Button biasa, bukan FloatingActionButton!
+        val fabAddAlbum = findViewById<Button>(R.id.fab_add_album)
         swipeRefresh = findViewById(R.id.swipe_refresh)
 
         val rvAlbums = findViewById<RecyclerView>(R.id.rv_albums)
