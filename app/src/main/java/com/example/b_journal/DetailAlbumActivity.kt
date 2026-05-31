@@ -1,5 +1,6 @@
 package com.example.b_journal
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -19,36 +20,48 @@ class DetailAlbumActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_detail_album)
+
+        albumId = intent.getIntExtra("ALBUM_ID", -1)
+        val albumOwnerId = intent.getIntExtra("ALBUM_OWNER_ID", -1)
+        val albumName = intent.getStringExtra("ALBUM_NAME") ?: "ALBUM"
+        val albumDesc = intent.getStringExtra("ALBUM_DESC") ?: ""
+
+        val sharedPref = getSharedPreferences("user_session", Context.MODE_PRIVATE)
+        val currentLoggedInUserId = sharedPref.getInt("USER_ID", -1)
+
+        val isOwner = (currentLoggedInUserId == albumOwnerId || currentLoggedInUserId == -1)
+
+        if (isOwner) {
+            setContentView(R.layout.activity_detail_album)
+
+            val btnEditAlbum = findViewById<Button>(R.id.btn_edit_album)
+            val fabAddPhoto = findViewById<Button>(R.id.fab_add_photo)
+
+            btnEditAlbum.setOnClickListener {
+                val intent = Intent(this, EditDeleteAlbumActivity::class.java).apply {
+                    putExtra("ALBUM_ID", albumId)
+                    putExtra("ALBUM_TITLE", albumName)
+                    putExtra("ALBUM_DESC", albumDesc)
+                }
+                startActivity(intent)
+            }
+
+            fabAddPhoto.setOnClickListener {
+                val intent = Intent(this, UploadFotoActivity::class.java).apply {
+                    putExtra("ALBUM_ID", albumId)
+                }
+                startActivity(intent)
+            }
+        } else {
+            setContentView(R.layout.activity_detail_album_viewer)
+        }
 
         val tvTitle = findViewById<TextView>(R.id.tv_detail_title)
         val tvDesc = findViewById<TextView>(R.id.tv_detail_desc)
         val rvPhotos = findViewById<RecyclerView>(R.id.rv_detail_photos)
-        val btnEditAlbum = findViewById<Button>(R.id.btn_edit_album)
-        val fabAddPhoto = findViewById<Button>(R.id.fab_add_photo)
-
-        albumId = intent.getIntExtra("ALBUM_ID", -1)
-        val albumName = intent.getStringExtra("ALBUM_NAME") ?: "ALBUM"
-        val albumDesc = intent.getStringExtra("ALBUM_DESC") ?: ""
 
         tvTitle.text = albumName.uppercase()
         tvDesc.text = albumDesc
-
-        btnEditAlbum.setOnClickListener {
-            val intent = Intent(this, EditDeleteAlbumActivity::class.java).apply {
-                putExtra("ALBUM_ID", albumId)
-                putExtra("ALBUM_TITLE", albumName)
-                putExtra("ALBUM_DESC", albumDesc)
-            }
-            startActivity(intent)
-        }
-
-        fabAddPhoto.setOnClickListener {
-            val intent = Intent(this, UploadFotoActivity::class.java).apply {
-                putExtra("ALBUM_ID", albumId)
-            }
-            startActivity(intent)
-        }
 
         rvPhotos.layoutManager = GridLayoutManager(this, 2)
         fotoAdapter = DetailFotoAdapter(daftarFotoLocal)

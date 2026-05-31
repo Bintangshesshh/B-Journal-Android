@@ -1,5 +1,6 @@
 package com.example.b_journal
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -62,6 +63,13 @@ class MainActivity : AppCompatActivity() {
                     if (status) {
                         val userObj = response.getJSONObject("user")
                         val namaLengkap = userObj.optString("NamaLengkap", "User")
+
+                        val userIdDariServer = userObj.optInt("UserID", -1)
+
+                        val sharedPref = getSharedPreferences("user_session", Context.MODE_PRIVATE)
+                        val editor = sharedPref.edit()
+                        editor.putInt("USER_ID", userIdDariServer)
+                        editor.apply()
 
                         Toast.makeText(this, "Halo $namaLengkap!", Toast.LENGTH_SHORT).show()
 
