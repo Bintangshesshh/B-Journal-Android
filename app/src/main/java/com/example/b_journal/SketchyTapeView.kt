@@ -10,7 +10,6 @@ class SketchyTapeView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr) {
 
-    // Spidol Hitam Utama
     private val sketchyBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.BLACK
         style = Paint.Style.STROKE
@@ -19,20 +18,17 @@ class SketchyTapeView @JvmOverloads constructor(
         strokeJoin = Paint.Join.MITER
     }
 
-    // Arsiran pulpen coret-coret tipis di dalam box
     private val hatchPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.parseColor("#33000000") // Hitam transparan buat arsiran
         style = Paint.Style.STROKE
         strokeWidth = 3f
     }
 
-    // Shadow Kaku
     private val hardShadowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.BLACK
         style = Paint.Style.FILL
     }
 
-    // Lakban Abu-abu Kasar
     private val tapePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.parseColor("#558A8A85")
         style = Paint.Style.FILL
@@ -77,33 +73,28 @@ class SketchyTapeView @JvmOverloads constructor(
         val t = child.top.toFloat()
         val r = child.right.toFloat()
         val b = child.bottom.toFloat()
-        val offsetShadow = 20f // Shadow dibuat lebih tebal menjauh
+        val offsetShadow = 20f
 
-        // SHADOW
         shadowPath.reset()
         makeSuperSketchyRect(shadowPath, l + offsetShadow, t + offsetShadow, r + offsetShadow, b + offsetShadow, 3f)
         canvas.drawPath(shadowPath, hardShadowPaint)
 
-        // ARSIRAN
         drawCrossHatch(canvas, l, t, r, b)
 
-        // BORDER UTAMA LAPISAN 1
         path.reset()
         makeSuperSketchyRect(path, l, t, r, b, 6f)
         canvas.drawPath(path, sketchyBorderPaint)
 
-        // BORDER LAPISAN 2
         extraPath.reset()
         makeSuperSketchyRect(extraPath, l - 2f, t + 2f, r + 2f, b - 2f, 5f)
         canvas.drawPath(extraPath, sketchyBorderPaint)
 
-        // LAKBAN
-        drawTornTape(canvas, l + 30f, t, -20f) // Lakban Atas
-        drawTornTape(canvas, r - 50f, b, 25f)  // Lakban Bawah
+        drawTornTape(canvas, l + 30f, t, -20f)
+        drawTornTape(canvas, r - 50f, b, 25f)
     }
 
     private fun makeSuperSketchyRect(p: Path, left: Float, top: Float, right: Float, bottom: Float, maxDev: Float) {
-        val segments = 16 // Segmen ditambah biar makin detail
+        val segments = 16
         p.moveTo(left, top)
 
         // Atas
@@ -133,7 +124,6 @@ class SketchyTapeView @JvmOverloads constructor(
         p.close()
     }
 
-    // Efek arsiran garis miring buku sketsa
     private fun drawCrossHatch(canvas: Canvas, l: Float, t: Float, r: Float, b: Float) {
         val interval = 18f
         var i = l - (b - t)
@@ -143,13 +133,12 @@ class SketchyTapeView @JvmOverloads constructor(
         }
     }
 
-    // Efek potongan lakban kumal robek di ujungnya
     private fun drawTornTape(canvas: Canvas, cx: Float, cy: Float, rotation: Float) {
         canvas.save()
         canvas.rotate(rotation, cx, cy)
 
-        val tw = 80f // Lebar lakban
-        val th = 30f // Tinggi lakban
+        val tw = 80f
+        val th = 30f
         val tapePath = Path()
 
         val left = cx - tw / 2
@@ -160,7 +149,6 @@ class SketchyTapeView @JvmOverloads constructor(
         tapePath.moveTo(left, top)
         tapePath.lineTo(right, top)
 
-        // Kanan robek gerigi tajam
         var currY = top
         while (currY < bottom) {
             currY += 5f
@@ -170,7 +158,6 @@ class SketchyTapeView @JvmOverloads constructor(
 
         tapePath.lineTo(left, bottom)
 
-        // Kiri robek gerigi tajam
         while (currY > top) {
             currY -= 5f
             val stepX = if (random.nextBoolean()) left + 6f else left

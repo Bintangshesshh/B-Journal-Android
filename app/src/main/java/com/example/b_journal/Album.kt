@@ -5,5 +5,6 @@ data class Album(
     val namaAlbum: String,
     val deskripsi: String,
     val tanggalDibuat: String,
-    val urlGambar: String = ""
+    val urlGambar: String = "",
+    val userId: Int
 )

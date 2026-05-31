@@ -9,7 +9,6 @@ import com.bumptech.glide.Glide
 class DetailFotoAdapter(private var listFoto: ArrayList<Foto>) :
     RecyclerView.Adapter<DetailFotoAdapter.FotoViewHolder>() {
 
-    // Konstruktor ViewHolder langsung menerima parameter view bertipe View bawaan Android
     class FotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val ivGridFoto: ImageView = itemView as ImageView
     }
@@ -18,7 +17,7 @@ class DetailFotoAdapter(private var listFoto: ArrayList<Foto>) :
         val imageView = ImageView(parent.context).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                400 // Tinggi kotak foto 400px
+                400
             )
             scaleType = ImageView.ScaleType.CENTER_CROP
             setPadding(8, 8, 8, 8)
@@ -30,7 +29,6 @@ class DetailFotoAdapter(private var listFoto: ArrayList<Foto>) :
     override fun onBindViewHolder(holder: FotoViewHolder, position: Int) {
         val foto = listFoto[position]
 
-        // Memakai properti 'lokasiFile' sesuai struktur data class Foto lu
         if (foto.lokasiFile.isNotEmpty()) {
             Glide.with(holder.itemView.context)
                 .load(foto.lokasiFile)

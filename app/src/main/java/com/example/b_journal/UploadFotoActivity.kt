@@ -23,7 +23,6 @@ class UploadFotoActivity : AppCompatActivity() {
     private var imageBase64: String? = null
     private var albumId: Int = -1
 
-    // 1. Logic buat milih foto dari galeri
     private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             ivPreview.setImageURI(it)
@@ -39,7 +38,6 @@ class UploadFotoActivity : AppCompatActivity() {
         val btnPilih = findViewById<Button>(R.id.btn_pilih_foto)
         val btnUpload = findViewById<Button>(R.id.btn_upload)
 
-        // Tangkap AlbumID yang dilempar dari AddAlbumActivity
         albumId = intent.getIntExtra("NEW_ALBUM_ID", -1)
 
         btnPilih.setOnClickListener { pickImage.launch("image/*") }
@@ -57,14 +55,13 @@ class UploadFotoActivity : AppCompatActivity() {
         val inputStream: InputStream? = contentResolver.openInputStream(uri)
         val bitmap = BitmapFactory.decodeStream(inputStream)
         val outputStream = ByteArrayOutputStream()
-        // Kompres dikit biar gak kegedean pas dikirim ke API
         bitmap.compress(Bitmap.CompressFormat.JPEG, 70, outputStream)
         val bytes = outputStream.toByteArray()
         return Base64.encodeToString(bytes, Base64.DEFAULT)
     }
 
     private fun uploadFotoKeVercel() {
-        val url = "https://b-journal-34na.vercel.app/api/upload" // Sesuaikan nanti di Web
+        val url = "https://b-journal-34na.vercel.app/api/upload"
         val params = JSONObject()
         params.put("AlbumID", albumId)
         params.put("ImageBase64", imageBase64)
@@ -73,7 +70,7 @@ class UploadFotoActivity : AppCompatActivity() {
         val request = JsonObjectRequest(Request.Method.POST, url, params,
             { response ->
                 Toast.makeText(this, "Foto Berhasil Diupload!", Toast.LENGTH_SHORT).show()
-                finish() // Balik ke Dashboard
+                finish()
             },
             { error ->
                 Toast.makeText(this, "Gagal Upload: ${error.message}", Toast.LENGTH_SHORT).show()

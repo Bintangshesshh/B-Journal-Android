@@ -21,10 +21,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(bundle: Bundle?) {
         super.onCreate(bundle)
-        // Memastikan mengarah ke activity_main.xml yang sudah diperbaiki
         setContentView(R.layout.activity_main)
 
-        // ID disesuaikan 100% dengan activity_main.xml terbaru
         val etUserId = findViewById<EditText>(R.id.et_user_id)
         val etAccessCode = findViewById<EditText>(R.id.et_access_code)
         btnAuthenticate = findViewById<Button>(R.id.btn_authenticate)
@@ -65,7 +63,7 @@ class MainActivity : AppCompatActivity() {
                         val userObj = response.getJSONObject("user")
                         val namaLengkap = userObj.optString("NamaLengkap", "User")
 
-                        Toast.makeText(this, "Menyala Sombong! Halo $namaLengkap!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Halo $namaLengkap!", Toast.LENGTH_SHORT).show()
 
                         val intent = Intent(this, DashboardActivity::class.java)
                         startActivity(intent)

@@ -36,7 +36,6 @@ class AddAlbumActivity : AppCompatActivity() {
     private fun kirimDataKeSupabase(judul: String, deskripsi: String, buttonSubmit: Button) {
         val url = "https://b-journal-34na.vercel.app/api/dashboard"
 
-        // Efek loading pas submit gaya brutalist
         buttonSubmit.text = "SAVING TO DATABASE..."
         buttonSubmit.isEnabled = false
 
@@ -65,7 +64,7 @@ class AddAlbumActivity : AppCompatActivity() {
                                 val newAlbumId = data.getInt("AlbumID")
 
                                 val intent = Intent(this, UploadFotoActivity::class.java).apply {
-                                    putExtra("ALBUM_ID", newAlbumId) // Udah disamain sama halaman lain
+                                    putExtra("ALBUM_ID", newAlbumId)
                                 }
                                 startActivity(intent)
                                 finish()

@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
@@ -17,34 +18,35 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var rvAlbums: RecyclerView
     private lateinit var albumAdapter: AlbumAdapter
     private var daftarAlbumLocal = ArrayList<Album>()
-
-    // Variabel tunggal untuk antrian Volley agar hemat RAM
     private lateinit var requestQueue: RequestQueue
+
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
 
-        // 1. DAFTARIN KOMPONEN DARI XML
         val btnAddAlbum = findViewById<Button>(R.id.fab_add_album)
         rvAlbums = findViewById(R.id.rv_albums)
 
-        // 2. SETUP RECYCLER VIEW (GRID 2 KOLOM)
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh)
+
         rvAlbums.layoutManager = GridLayoutManager(this, 2)
         albumAdapter = AlbumAdapter(daftarAlbumLocal)
         rvAlbums.adapter = albumAdapter
 
-        // 3. INITIALIZE VOLLEY QUEUE (Cuma sekali pas halaman dibuat)
         requestQueue = Volley.newRequestQueue(this)
 
-        // 4. AKSI TOMBOL TAMBAH ALBUM (+)
         btnAddAlbum.setOnClickListener {
             val intent = Intent(this, AddAlbumActivity::class.java)
             startActivity(intent)
         }
+
+        swipeRefreshLayout.setOnRefreshListener {
+            ambilDataDashboard()
+        }
     }
 
-    // Refresh data otomatis tiap kali user kembali ke halaman ini
     override fun onResume() {
         super.onResume()
         ambilDataDashboard()
@@ -56,6 +58,8 @@ class DashboardActivity : AppCompatActivity() {
         val request = JsonObjectRequest(
             Request.Method.GET, url, null,
             { response ->
+                swipeRefreshLayout.isRefreshing = false
+
                 try {
                     val success = response.getBoolean("success")
                     if (success) {
@@ -69,8 +73,8 @@ class DashboardActivity : AppCompatActivity() {
                             val judul = item.getString("NamaAlbum")
                             val deskripsi = item.getString("Deskripsi")
                             val tanggalDibuat = item.optString("TanggalDibuat", "No Date")
+                            val albumOwnerId = item.getInt("UserID")
 
-                            // 🟢 FIX UTAMA: Bongkar array "foto" untuk ngambil item pertama jadi thumbnail
                             var urlGambar = ""
                             val fotoArray = item.optJSONArray("foto")
                             if (fotoArray != null && fotoArray.length() > 0) {
@@ -78,11 +82,7 @@ class DashboardActivity : AppCompatActivity() {
                                 urlGambar = fotoPertama.optString("LokasiFile", "")
                             }
 
-                            // Masukkan ke local list dengan URL gambar yang valid dari API
-                            daftarAlbumLocal.add(Album(id, judul, deskripsi, tanggalDibuat, urlGambar))
-                        }
-
-                        // Kirim data baru ke adapter agar layout diperbarui
+                            daftarAlbumLocal.add(Album(id, judul, deskripsi, tanggalDibuat, urlGambar, albumOwnerId))                        }
                         albumAdapter.masukkanDataBaru(daftarAlbumLocal)
                     }
                 } catch (e: Exception) {
@@ -91,11 +91,12 @@ class DashboardActivity : AppCompatActivity() {
                 }
             },
             { error ->
+                swipeRefreshLayout.isRefreshing = false
+
                 error.printStackTrace()
                 Toast.makeText(this, "Eror koneksi ke server", Toast.LENGTH_SHORT).show()
             }
         )
-        // Masukkan ke antrian tunggal requestQueue
         requestQueue.add(request)
     }
 }

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,10 +17,6 @@ class DetailAlbumActivity : AppCompatActivity() {
     private lateinit var fotoAdapter: DetailFotoAdapter
     private val daftarFotoLocal = ArrayList<Foto>()
 
-    // Simpan teks nama dan deskripsi di level class buat jaga-jaga kalau dipanggil tempat lain
-    private var albumName: String = "ALBUM"
-    private var albumDesc: String = ""
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_album)
@@ -33,8 +28,8 @@ class DetailAlbumActivity : AppCompatActivity() {
         val fabAddPhoto = findViewById<Button>(R.id.fab_add_photo)
 
         albumId = intent.getIntExtra("ALBUM_ID", -1)
-        albumName = intent.getStringExtra("ALBUM_NAME") ?: "ALBUM"
-        albumDesc = intent.getStringExtra("ALBUM_DESC") ?: ""
+        val albumName = intent.getStringExtra("ALBUM_NAME") ?: "ALBUM"
+        val albumDesc = intent.getStringExtra("ALBUM_DESC") ?: ""
 
         tvTitle.text = albumName.uppercase()
         tvDesc.text = albumDesc
@@ -60,7 +55,6 @@ class DetailAlbumActivity : AppCompatActivity() {
         rvPhotos.adapter = fotoAdapter
     }
 
-    // 🟢 PINDAH KE SINI: Biar kalau abis upload foto, pas balik layarnya langsung nge-refresh
     override fun onResume() {
         super.onResume()
         ambilKoleksiFotoDariVercel()
@@ -68,7 +62,6 @@ class DetailAlbumActivity : AppCompatActivity() {
 
     private fun ambilKoleksiFotoDariVercel() {
         val url = "https://b-journal-34na.vercel.app/api/dashboard"
-
         val request = JsonObjectRequest(
             Request.Method.GET, url, null,
             { response ->
@@ -94,24 +87,14 @@ class DetailAlbumActivity : AppCompatActivity() {
                                 break
                             }
                         }
-
                         fotoAdapter.updateData(daftarFotoLocal)
-
-                        if (daftarFotoLocal.isEmpty()) {
-                            Toast.makeText(this, "Album ini belum memiliki foto!", Toast.LENGTH_SHORT).show()
-                        }
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    Toast.makeText(this, "Gagal memuat foto!", Toast.LENGTH_SHORT).show()
                 }
             },
-            { error ->
-                error.printStackTrace()
-                Toast.makeText(this, "Eror koneksi ke server!", Toast.LENGTH_SHORT).show()
-            }
+            { error -> error.printStackTrace() }
         )
-        // 🟢 FIX: Langsung dimasukin ke antrian tanpa bikin variabel penampung baru
         Volley.newRequestQueue(this).add(request)
     }
 }

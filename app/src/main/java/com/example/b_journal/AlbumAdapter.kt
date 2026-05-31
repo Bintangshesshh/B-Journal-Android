@@ -40,12 +40,12 @@ class AlbumAdapter(private var listAlbum: ArrayList<Album>) :
             holder.ivCover.setImageResource(android.R.drawable.ic_menu_gallery)
         }
 
-        // Logic klik pindah ke halaman DetailAlbumActivity
         holder.itemView.setOnClickListener {
             val intent = Intent(holder.itemView.context, DetailAlbumActivity::class.java).apply {
                 putExtra("ALBUM_ID", album.id)
                 putExtra("ALBUM_NAME", album.namaAlbum)
                 putExtra("ALBUM_DESC", album.deskripsi)
+                putExtra("ALBUM_OWNER_ID", album.userId)
             }
             holder.itemView.context.startActivity(intent)
         }

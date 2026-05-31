@@ -23,12 +23,10 @@ class EditDeleteAlbumActivity : AppCompatActivity() {
         val btnUpdateAlbum = findViewById<Button>(R.id.btn_update_album)
         val btnDeleteAlbum = findViewById<Button>(R.id.btn_delete_album)
 
-        // 🟢 FIX PERBAIKAN DI SINI, BIN! Semuanya memanggil objek 'intent'
         albumId = intent.getIntExtra("ALBUM_ID", 0)
         etEditTitle.setText(intent.getStringExtra("ALBUM_TITLE"))
-        etEditDesc.setText(intent.getStringExtra("ALBUM_DESC")) // 👈 Jauh lebih ringkas & bener!
+        etEditDesc.setText(intent.getStringExtra("ALBUM_DESC"))
 
-        // 🛠️ AKSI 1: TOMBOL UPDATE (PUT METHOD)
         btnUpdateAlbum.setOnClickListener {
             val title = etEditTitle.text.toString().trim()
             val desc = etEditDesc.text.toString().trim()
@@ -40,7 +38,6 @@ class EditDeleteAlbumActivity : AppCompatActivity() {
             }
         }
 
-        // 🗑️ AKSI 2: TOMBOL DELETE (DELETE METHOD)
         btnDeleteAlbum.setOnClickListener {
             eksekusiDelete()
         }
@@ -62,7 +59,7 @@ class EditDeleteAlbumActivity : AppCompatActivity() {
                 try {
                     if (response.getBoolean("success")) {
                         Toast.makeText(this, "Album Berhasil Diubah!", Toast.LENGTH_SHORT).show()
-                        finish() // Kembali ke dashboard dengan sukses
+                        finish()
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -83,7 +80,7 @@ class EditDeleteAlbumActivity : AppCompatActivity() {
                 try {
                     if (response.getBoolean("success")) {
                         Toast.makeText(this, "Album Telah Dihapus!", Toast.LENGTH_SHORT).show()
-                        finish() // Tutup halaman, balik ke dashboard
+                        finish()
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
