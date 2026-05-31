@@ -1,5 +1,6 @@
 package com.example.b_journal
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -22,11 +23,12 @@ class DashboardActivity : AppCompatActivity() {
 
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreate(bundle: Bundle?) {
+        super.onCreate(bundle)
         setContentView(R.layout.activity_dashboard)
 
         val btnAddAlbum = findViewById<Button>(R.id.fab_add_album)
+        val btnExit = findViewById<Button>(R.id.btn_logout)
         rvAlbums = findViewById(R.id.rv_albums)
 
         swipeRefreshLayout = findViewById(R.id.swipe_refresh)
@@ -40,6 +42,21 @@ class DashboardActivity : AppCompatActivity() {
         btnAddAlbum.setOnClickListener {
             val intent = Intent(this, AddAlbumActivity::class.java)
             startActivity(intent)
+        }
+
+        btnExit.setOnClickListener {
+            val sharedPref = getSharedPreferences("user_session", Context.MODE_PRIVATE)
+            val editor = sharedPref.edit()
+            editor.clear()
+            editor.apply()
+
+            Toast.makeText(this, "Session dihapus, berhasil keluar!", Toast.LENGTH_SHORT).show()
+
+            val intent = Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            startActivity(intent)
+            finish()
         }
 
         swipeRefreshLayout.setOnRefreshListener {
@@ -82,7 +99,8 @@ class DashboardActivity : AppCompatActivity() {
                                 urlGambar = fotoPertama.optString("LokasiFile", "")
                             }
 
-                            daftarAlbumLocal.add(Album(id, judul, deskripsi, tanggalDibuat, urlGambar, albumOwnerId))                        }
+                            daftarAlbumLocal.add(Album(id, judul, deskripsi, tanggalDibuat, urlGambar, albumOwnerId))
+                        }
                         albumAdapter.masukkanDataBaru(daftarAlbumLocal)
                     }
                 } catch (e: Exception) {
