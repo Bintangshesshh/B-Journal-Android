@@ -8,6 +8,8 @@ import com.bumptech.glide.Glide
 
 class DetailFotoAdapter(private var listFoto: ArrayList<Foto>) :
     RecyclerView.Adapter<DetailFotoAdapter.FotoViewHolder>() {
+
+    // Konstruktor ViewHolder langsung menerima parameter view bertipe View bawaan Android
     class FotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val ivGridFoto: ImageView = itemView as ImageView
     }
@@ -27,12 +29,16 @@ class DetailFotoAdapter(private var listFoto: ArrayList<Foto>) :
 
     override fun onBindViewHolder(holder: FotoViewHolder, position: Int) {
         val foto = listFoto[position]
+
+        // Memakai properti 'lokasiFile' sesuai struktur data class Foto lu
         if (foto.lokasiFile.isNotEmpty()) {
             Glide.with(holder.itemView.context)
                 .load(foto.lokasiFile)
                 .placeholder(android.R.drawable.ic_menu_gallery)
                 .error(android.R.drawable.ic_menu_report_image)
                 .into(holder.ivGridFoto)
+        } else {
+            holder.ivGridFoto.setImageResource(android.R.drawable.ic_menu_gallery)
         }
     }
 

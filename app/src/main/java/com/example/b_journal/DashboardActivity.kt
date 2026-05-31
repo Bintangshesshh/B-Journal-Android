@@ -4,73 +4,55 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.volley.Request
+import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 
 class DashboardActivity : AppCompatActivity() {
 
+    private lateinit var rvAlbums: RecyclerView
     private lateinit var albumAdapter: AlbumAdapter
-    private val daftarAlbumLocal = ArrayList<Album>()
-    private lateinit var swipeRefresh: SwipeRefreshLayout
-
-    // Penangkap sinyal pas balik dari halaman AddAlbum biar otomatis refresh data
-    private val launcherAddAlbum = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == RESULT_OK) {
-            ambilDataFeedDariVercel() // Auto refresh feed pas kelar nambah data!
-        }
-    }
+    private var daftarAlbumLocal = ArrayList<Album>()
+    private lateinit var requestQueue: RequestQueue
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
 
-        val btnLogout = findViewById<Button>(R.id.btn_logout)
-        // 🔴 FIX: Udah diganti jadi Button biasa, bukan FloatingActionButton!
-        val fabAddAlbum = findViewById<Button>(R.id.fab_add_album)
-        swipeRefresh = findViewById(R.id.swipe_refresh)
+        // 1. DAFTARIN KOMPONEN DARI XML
+        val btnAddAlbum = findViewById<Button>(R.id.fab_add_album)
+        rvAlbums = findViewById(R.id.rv_albums)
 
-        val rvAlbums = findViewById<RecyclerView>(R.id.rv_albums)
-        rvAlbums.layoutManager = LinearLayoutManager(this)
+        // 2. SETUP RECYCLER VIEW
+        rvAlbums.layoutManager = GridLayoutManager(this, 2)
         albumAdapter = AlbumAdapter(daftarAlbumLocal)
         rvAlbums.adapter = albumAdapter
 
-        // Ambil data pas pertama masuk
-        ambilDataFeedDariVercel()
+        // 3. INITIALIZE VOLLEY QUEUE
+        requestQueue = Volley.newRequestQueue(this)
 
-        // Logic ditarik ke bawah
-        swipeRefresh.setOnRefreshListener {
-            ambilDataFeedDariVercel()
-        }
-
-        // Pindah ke halaman input pas di klik
-        fabAddAlbum.setOnClickListener {
+        // 4. AKSI TOMBOL TAMBAH ALBUM
+        btnAddAlbum.setOnClickListener {
             val intent = Intent(this, AddAlbumActivity::class.java)
-            launcherAddAlbum.launch(intent)
-        }
-
-        btnLogout.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-            finish()
         }
     }
 
-    private fun ambilDataFeedDariVercel() {
+    override fun onResume() {
+        super.onResume()
+        ambilDataDashboard()
+    }
+
+    private fun ambilDataDashboard() {
         val url = "https://b-journal-34na.vercel.app/api/dashboard"
 
-        val queue = Volley.newRequestQueue(this)
         val request = JsonObjectRequest(
             Request.Method.GET, url, null,
             { response ->
-                swipeRefresh.isRefreshing = false
                 try {
                     val success = response.getBoolean("success")
                     if (success) {
@@ -80,39 +62,26 @@ class DashboardActivity : AppCompatActivity() {
                         for (i in 0 until jsonArray.length()) {
                             val item = jsonArray.getJSONObject(i)
 
-                            // 1. AMBIL ARRAY "foto" DARI JSON hasil join
-                            val fotoArray = item.optJSONArray("foto")
+                            val id = item.getInt("AlbumID")
+                            val judul = item.getString("NamaAlbum")
+                            val deskripsi = item.getString("Deskripsi")
+                            val tanggalDibuat = item.optString("TanggalDibuat", "No Date")
+                            val urlGambar = item.optString("urlGambar", "")
 
-                            // 2. AMBIL URL FOTO PERTAMA JIKA ADA
-                            val fotoUrl = if (fotoArray != null && fotoArray.length() > 0) {
-                                fotoArray.getJSONObject(0).optString("LokasiFile", "")
-                            } else {
-                                ""
-                            }
-
-                            val album = Album(
-                                id = item.getInt("AlbumID"),
-                                namaAlbum = item.getString("NamaAlbum"),
-                                deskripsi = item.getString("Deskripsi"),
-                                tanggalDibuat = item.getString("TanggalDibuat"),
-                                urlGambar = fotoUrl
-                            )
-                            daftarAlbumLocal.add(album)
+                            daftarAlbumLocal.add(Album(id, judul, deskripsi, tanggalDibuat, urlGambar))
                         }
-
                         albumAdapter.masukkanDataBaru(daftarAlbumLocal)
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    Toast.makeText(this, "Gagal mengurai data!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Gagal memproses data server", Toast.LENGTH_SHORT).show()
                 }
             },
             { error ->
-                swipeRefresh.isRefreshing = false
                 error.printStackTrace()
-                Toast.makeText(this, "Gagal memuat feed!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Eror koneksi ke server", Toast.LENGTH_SHORT).show()
             }
         )
-        queue.add(request)
+        requestQueue.add(request)
     }
 }

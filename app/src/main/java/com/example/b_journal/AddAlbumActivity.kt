@@ -65,7 +65,7 @@ class AddAlbumActivity : AppCompatActivity() {
                                 val newAlbumId = data.getInt("AlbumID")
 
                                 val intent = Intent(this, UploadFotoActivity::class.java).apply {
-                                    putExtra("NEW_ALBUM_ID", newAlbumId)
+                                    putExtra("ALBUM_ID", newAlbumId) // Udah disamain sama halaman lain
                                 }
                                 startActivity(intent)
                                 finish()

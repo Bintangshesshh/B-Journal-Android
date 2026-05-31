@@ -44,6 +44,9 @@
             android:name=".UploadFotoActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".EditDeleteAlbumActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

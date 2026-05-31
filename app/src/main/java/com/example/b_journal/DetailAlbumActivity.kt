@@ -1,6 +1,8 @@
 package com.example.b_journal
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +18,10 @@ class DetailAlbumActivity : AppCompatActivity() {
     private lateinit var fotoAdapter: DetailFotoAdapter
     private val daftarFotoLocal = ArrayList<Foto>()
 
+    // Simpan teks nama dan deskripsi di level class buat jaga-jaga kalau dipanggil tempat lain
+    private var albumName: String = "ALBUM"
+    private var albumDesc: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_album)
@@ -23,28 +29,46 @@ class DetailAlbumActivity : AppCompatActivity() {
         val tvTitle = findViewById<TextView>(R.id.tv_detail_title)
         val tvDesc = findViewById<TextView>(R.id.tv_detail_desc)
         val rvPhotos = findViewById<RecyclerView>(R.id.rv_detail_photos)
+        val btnEditAlbum = findViewById<Button>(R.id.btn_edit_album)
+        val fabAddPhoto = findViewById<Button>(R.id.fab_add_photo)
 
-        // Tangkap data operan dari Dashboard
         albumId = intent.getIntExtra("ALBUM_ID", -1)
-        val albumName = intent.getStringExtra("ALBUM_NAME") ?: "ALBUM"
-        val albumDesc = intent.getStringExtra("ALBUM_DESC") ?: ""
+        albumName = intent.getStringExtra("ALBUM_NAME") ?: "ALBUM"
+        albumDesc = intent.getStringExtra("ALBUM_DESC") ?: ""
 
         tvTitle.text = albumName.uppercase()
         tvDesc.text = albumDesc
 
-        // Set Recycler View bentuk GRID 2 Kolom
+        btnEditAlbum.setOnClickListener {
+            val intent = Intent(this, EditDeleteAlbumActivity::class.java).apply {
+                putExtra("ALBUM_ID", albumId)
+                putExtra("ALBUM_TITLE", albumName)
+                putExtra("ALBUM_DESC", albumDesc)
+            }
+            startActivity(intent)
+        }
+
+        fabAddPhoto.setOnClickListener {
+            val intent = Intent(this, UploadFotoActivity::class.java).apply {
+                putExtra("ALBUM_ID", albumId)
+            }
+            startActivity(intent)
+        }
+
         rvPhotos.layoutManager = GridLayoutManager(this, 2)
         fotoAdapter = DetailFotoAdapter(daftarFotoLocal)
         rvPhotos.adapter = fotoAdapter
+    }
 
-        // Tembak data foto dari Vercel
+    // 🟢 PINDAH KE SINI: Biar kalau abis upload foto, pas balik layarnya langsung nge-refresh
+    override fun onResume() {
+        super.onResume()
         ambilKoleksiFotoDariVercel()
     }
 
     private fun ambilKoleksiFotoDariVercel() {
         val url = "https://b-journal-34na.vercel.app/api/dashboard"
 
-        val queue = Volley.newRequestQueue(this)
         val request = JsonObjectRequest(
             Request.Method.GET, url, null,
             { response ->
@@ -54,7 +78,6 @@ class DetailAlbumActivity : AppCompatActivity() {
                         val jsonArray = response.getJSONArray("data")
                         daftarFotoLocal.clear()
 
-                        // Cari album yang ID-nya COCOK sama yang diklik
                         for (i in 0 until jsonArray.length()) {
                             val item = jsonArray.getJSONObject(i)
                             val currentAlbumId = item.getInt("AlbumID")
@@ -68,11 +91,10 @@ class DetailAlbumActivity : AppCompatActivity() {
                                         daftarFotoLocal.add(Foto(urlFoto))
                                     }
                                 }
-                                break // Kalau udah ketemu langsung stop loop
+                                break
                             }
                         }
 
-                        // Update isi grid foto
                         fotoAdapter.updateData(daftarFotoLocal)
 
                         if (daftarFotoLocal.isEmpty()) {
@@ -89,6 +111,7 @@ class DetailAlbumActivity : AppCompatActivity() {
                 Toast.makeText(this, "Eror koneksi ke server!", Toast.LENGTH_SHORT).show()
             }
         )
-        queue.add(request)
+        // 🟢 FIX: Langsung dimasukin ke antrian tanpa bikin variabel penampung baru
+        Volley.newRequestQueue(this).add(request)
     }
 }
