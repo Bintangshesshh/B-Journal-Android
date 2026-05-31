@@ -1,87 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingHorizontal="4dp"
-    android:paddingVertical="8dp">
+    android:padding="4dp">
 
-    <com.example.b_journal.SketchyTapeView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="12dp">
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1.6"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <LinearLayout
+        <com.example.b_journal.SketchyTapeView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_height="match_parent"
+            android:padding="8dp">
 
-            <FrameLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@android:color/black"
-                android:padding="3dp"
-                android:layout_marginBottom="12dp">
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:padding="12dp">
 
-                <ImageView
-                    android:id="@+id/iv_item_cover"
+                <FrameLayout
+                    android:id="@+id/fl_cover_container"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#D0D0D0"
-                    android:scaleType="centerCrop"
-                    android:src="@android:drawable/ic_menu_gallery" />
-            </FrameLayout>
+                    android:layout_height="125dp"
+                    android:background="@android:color/black"
+                    android:padding="2dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="12dp">
+                    <ImageView
+                        android:id="@+id/iv_item_cover"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#D0D0D0"
+                        android:scaleType="centerCrop"
+                        android:src="@android:drawable/ic_menu_gallery" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/tv_item_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="// POSTED_AT: 2026-05-17"
+                    android:textColor="#666666"
+                    android:textSize="9sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <View
+                    android:id="@+id/v_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@android:color/black"
+                    android:layout_marginBottom="4dp"
+                    app:layout_constraintBottom_toTopOf="@id/tv_item_date"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
                 <TextView
                     android:id="@+id/tv_item_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TONNY Q RASTAFARI"
+                    android:text="TITLE"
                     android:textColor="#ECECE6"
                     android:background="@android:color/black"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="4dp"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="3dp"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/fl_cover_container"
+                    app:layout_constraintStart_toStartOf="parent" />
 
-            <TextView
-                android:id="@+id/tv_item_desc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Bapa-bapa masih bernyanyi"
-                android:textColor="@android:color/black"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp"
-                android:paddingHorizontal="4dp" />
+                <TextView
+                    android:id="@+id/tv_item_desc"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="Description text goes here..."
+                    android:textColor="@android:color/black"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:ellipsize="end"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="6dp"
+                    app:layout_constraintTop_toBottomOf="@id/tv_item_title"
+                    app:layout_constraintBottom_toTopOf="@id/v_divider"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@android:color/black"
-                android:layout_marginBottom="8dp"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.example.b_journal.SketchyTapeView>
 
-            <TextView
-                android:id="@+id/tv_item_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="// POSTED_AT: 2026-05-17"
-                android:textColor="#666666"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                android:layout_gravity="end"
-                android:paddingRight="4dp" />
+    </FrameLayout>
 
-        </LinearLayout>
-    </com.example.b_journal.SketchyTapeView>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
