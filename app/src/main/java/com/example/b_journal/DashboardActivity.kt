@@ -110,7 +110,6 @@ class DashboardActivity : AppCompatActivity() {
             },
             { error ->
                 swipeRefreshLayout.isRefreshing = false
-
                 error.printStackTrace()
                 Toast.makeText(this, "Eror koneksi ke server", Toast.LENGTH_SHORT).show()
             }

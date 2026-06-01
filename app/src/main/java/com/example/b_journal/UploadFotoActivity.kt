@@ -20,6 +20,7 @@ import java.io.InputStream
 class UploadFotoActivity : AppCompatActivity() {
 
     private lateinit var ivPreview: ImageView
+    private lateinit var btnUpload: Button
     private var imageBase64: String? = null
     private var albumId: Int = -1
 
@@ -37,7 +38,7 @@ class UploadFotoActivity : AppCompatActivity() {
 
         ivPreview = findViewById(R.id.iv_preview)
         val btnPilih = findViewById<Button>(R.id.btn_pilih_foto)
-        val btnUpload = findViewById<Button>(R.id.btn_upload)
+        btnUpload = findViewById<Button>(R.id.btn_upload)
 
         albumId = intent.getIntExtra("ALBUM_ID", -1)
 
@@ -51,6 +52,9 @@ class UploadFotoActivity : AppCompatActivity() {
 
         btnUpload.setOnClickListener {
             if (imageBase64 != null) {
+                btnUpload.isEnabled = false
+                btnUpload.text = "Uploading... Please Wait"
+
                 uploadFotoKeVercel()
             } else {
                 Toast.makeText(this, "Pilih foto dulu!", Toast.LENGTH_SHORT).show()
@@ -92,10 +96,16 @@ class UploadFotoActivity : AppCompatActivity() {
         val request = object : JsonObjectRequest(
             Request.Method.POST, url, params,
             { response ->
+                btnUpload.isEnabled = true
+                btnUpload.text = "EXECUTE_UPLOAD_PUSH"
+
                 Toast.makeText(this, "Foto Berhasil Diupload!", Toast.LENGTH_SHORT).show()
                 finish()
             },
             { error ->
+                btnUpload.isEnabled = true
+                btnUpload.text = "EXECUTE_UPLOAD_PUSH"
+
                 error.printStackTrace()
                 val responseBody = error.networkResponse?.data?.let { String(it) }
                 if (!responseBody.isNullOrEmpty()) {
@@ -111,7 +121,6 @@ class UploadFotoActivity : AppCompatActivity() {
                 return headers
             }
         }
-
         queue.add(request)
     }
 }
