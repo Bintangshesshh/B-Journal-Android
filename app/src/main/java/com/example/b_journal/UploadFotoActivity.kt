@@ -23,12 +23,13 @@ class UploadFotoActivity : AppCompatActivity() {
     private var imageBase64: String? = null
     private var albumId: Int = -1
 
-    private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let {
-            ivPreview.setImageURI(it)
-            imageBase64 = convertUriToBase64(it)
+    private val pickImage =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
+                ivPreview.setImageURI(it)
+                imageBase64 = convertUriToBase64(it)
+            }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +39,13 @@ class UploadFotoActivity : AppCompatActivity() {
         val btnPilih = findViewById<Button>(R.id.btn_pilih_foto)
         val btnUpload = findViewById<Button>(R.id.btn_upload)
 
-        albumId = intent.getIntExtra("NEW_ALBUM_ID", -1)
+        albumId = intent.getIntExtra("ALBUM_ID", -1)
+
+        if (albumId == -1) {
+            Toast.makeText(this, "Eror: ID Album bermasalah!", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
         btnPilih.setOnClickListener { pickImage.launch("image/*") }
 
@@ -46,36 +53,65 @@ class UploadFotoActivity : AppCompatActivity() {
             if (imageBase64 != null) {
                 uploadFotoKeVercel()
             } else {
-                Toast.makeText(this, "Pilih foto dulu cok!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Pilih foto dulu!", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun convertUriToBase64(uri: Uri): String {
-        val inputStream: InputStream? = contentResolver.openInputStream(uri)
-        val bitmap = BitmapFactory.decodeStream(inputStream)
-        val outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, outputStream)
-        val bytes = outputStream.toByteArray()
-        return Base64.encodeToString(bytes, Base64.DEFAULT)
+        try {
+            val inputStream: InputStream? = contentResolver.openInputStream(uri)
+            val options = BitmapFactory.Options().apply {
+                inSampleSize = 2
+            }
+            val bitmap = BitmapFactory.decodeStream(inputStream, null, options)
+            val outputStream = ByteArrayOutputStream()
+
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 40, outputStream)
+            val bytes = outputStream.toByteArray()
+
+            return Base64.encodeToString(bytes, Base64.NO_WRAP)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return ""
+        }
     }
 
     private fun uploadFotoKeVercel() {
         val url = "https://b-journal-34na.vercel.app/api/upload"
+
         val params = JSONObject()
-        params.put("AlbumID", albumId)
-        params.put("ImageBase64", imageBase64)
+        try {
+            params.put("AlbumID", albumId)
+            params.put("ImageBase64", imageBase64)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
         val queue = Volley.newRequestQueue(this)
-        val request = JsonObjectRequest(Request.Method.POST, url, params,
+        val request = object : JsonObjectRequest(
+            Request.Method.POST, url, params,
             { response ->
                 Toast.makeText(this, "Foto Berhasil Diupload!", Toast.LENGTH_SHORT).show()
                 finish()
             },
             { error ->
-                Toast.makeText(this, "Gagal Upload: ${error.message}", Toast.LENGTH_SHORT).show()
+                error.printStackTrace()
+                val responseBody = error.networkResponse?.data?.let { String(it) }
+                if (!responseBody.isNullOrEmpty()) {
+                    Toast.makeText(this, "Server Error: $responseBody", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this, "Gagal Upload: ${error.message}", Toast.LENGTH_SHORT).show()
+                }
             }
-        )
+        ) {
+            override fun getHeaders(): Map<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Content-Type"] = "application/json; charset=utf-8"
+                return headers
+            }
+        }
+
         queue.add(request)
     }
 }

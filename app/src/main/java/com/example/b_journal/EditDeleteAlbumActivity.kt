@@ -1,5 +1,7 @@
 package com.example.b_journal
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -59,6 +61,15 @@ class EditDeleteAlbumActivity : AppCompatActivity() {
                 try {
                     if (response.getBoolean("success")) {
                         Toast.makeText(this, "Album Berhasil Diubah!", Toast.LENGTH_SHORT).show()
+
+                        val intent = Intent(this, DetailAlbumActivity::class.java).apply {
+                            putExtra("ALBUM_ID", albumId)
+                            putExtra("ALBUM_NAME", judulBaru)
+                            putExtra("ALBUM_DESC", deskripsiBaru)
+
+                            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        }
+                        startActivity(intent)
                         finish()
                     }
                 } catch (e: Exception) {
@@ -80,6 +91,11 @@ class EditDeleteAlbumActivity : AppCompatActivity() {
                 try {
                     if (response.getBoolean("success")) {
                         Toast.makeText(this, "Album Telah Dihapus!", Toast.LENGTH_SHORT).show()
+
+                        val intent = Intent(this, DashboardActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        }
+                        startActivity(intent)
                         finish()
                     }
                 } catch (e: Exception) {
