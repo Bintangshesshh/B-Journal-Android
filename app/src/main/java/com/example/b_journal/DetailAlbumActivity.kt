@@ -18,6 +18,9 @@ class DetailAlbumActivity : AppCompatActivity() {
     private lateinit var fotoAdapter: DetailFotoAdapter
     private val daftarFotoLocal = ArrayList<Foto>()
 
+    private lateinit var tvTitle: TextView
+    private lateinit var tvDesc: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -38,10 +41,13 @@ class DetailAlbumActivity : AppCompatActivity() {
             val fabAddPhoto = findViewById<Button>(R.id.fab_add_photo)
 
             btnEditAlbum.setOnClickListener {
+                val currentTitle = tvTitle.text.toString()
+                val currentDesc = tvDesc.text.toString()
+
                 val intent = Intent(this, EditDeleteAlbumActivity::class.java).apply {
                     putExtra("ALBUM_ID", albumId)
-                    putExtra("ALBUM_TITLE", albumName)
-                    putExtra("ALBUM_DESC", albumDesc)
+                    putExtra("ALBUM_TITLE", currentTitle)
+                    putExtra("ALBUM_DESC", currentDesc)
                 }
                 startActivity(intent)
             }
@@ -56,8 +62,8 @@ class DetailAlbumActivity : AppCompatActivity() {
             setContentView(R.layout.activity_detail_album_viewer)
         }
 
-        val tvTitle = findViewById<TextView>(R.id.tv_detail_title)
-        val tvDesc = findViewById<TextView>(R.id.tv_detail_desc)
+        tvTitle = findViewById<TextView>(R.id.tv_detail_title)
+        tvDesc = findViewById<TextView>(R.id.tv_detail_desc)
         val rvPhotos = findViewById<RecyclerView>(R.id.rv_detail_photos)
 
         tvTitle.text = albumName.uppercase()
@@ -68,9 +74,28 @@ class DetailAlbumActivity : AppCompatActivity() {
         rvPhotos.adapter = fotoAdapter
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        albumId = intent.getIntExtra("ALBUM_ID", -1)
+
+        val judulBaru = intent.getStringExtra("ALBUM_NAME")
+        val deskripsiBaru = intent.getStringExtra("ALBUM_DESC")
+
+        if (!judulBaru.isNullOrEmpty()) {
+            tvTitle.text = judulBaru.uppercase()
+        }
+        if (deskripsiBaru != null) {
+            tvDesc.text = deskripsiBaru
+        }
+    }
+
     override fun onResume() {
         super.onResume()
-        ambilKoleksiFotoDariVercel()
+
+        if (albumId != -1) {
+            ambilKoleksiFotoDariVercel()
+        }
     }
 
     private fun ambilKoleksiFotoDariVercel() {
@@ -89,6 +114,11 @@ class DetailAlbumActivity : AppCompatActivity() {
                             val currentAlbumId = item.getInt("AlbumID")
 
                             if (currentAlbumId == albumId) {
+                                val namaAlbumTerbaru = item.getString("NamaAlbum")
+                                val deskripsiTerbaru = item.getString("Deskripsi")
+                                tvTitle.text = namaAlbumTerbaru.uppercase()
+                                tvDesc.text = deskripsiTerbaru
+
                                 val fotoArray = item.optJSONArray("foto")
                                 if (fotoArray != null) {
                                     for (j in 0 until fotoArray.length()) {

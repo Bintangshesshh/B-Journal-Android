@@ -63,11 +63,10 @@ class EditDeleteAlbumActivity : AppCompatActivity() {
                         Toast.makeText(this, "Album Berhasil Diubah!", Toast.LENGTH_SHORT).show()
 
                         val intent = Intent(this, DetailAlbumActivity::class.java).apply {
-                            putExtra("ALBUM_ID", albumId)
-                            putExtra("ALBUM_NAME", judulBaru)
-                            putExtra("ALBUM_DESC", deskripsiBaru)
+                            putExtra("ALBUM_ID", albumId) // Bawa ID albumnya lagi wajib!
 
-                            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                            flags =
+                                Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                         }
                         startActivity(intent)
                         finish()
