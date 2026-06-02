@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this, "Koneksi Bermasalah!", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(this, "Gagal koneksi ke server, Bin!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Gagal koneksi ke server!", Toast.LENGTH_SHORT).show()
                 }
             }
         ) {
