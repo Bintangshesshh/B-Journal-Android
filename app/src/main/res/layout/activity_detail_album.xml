@@ -88,8 +88,8 @@
                     android:id="@+id/tv_detail_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="NAMA ALBUM"
-                    android:textColor="@android:color/black"
+                    android:text="LOADING_TITLE..."
+                    android:textColor="#000000"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
@@ -104,14 +104,15 @@
                     android:id="@+id/tv_detail_desc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Deskripsi album di sini..."
-                    android:textColor="#505050"
+                    android:text="Loading description archive..."
+                    android:textColor="#333333"
                     android:textSize="14sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </com.example.b_journal.SketchyTapeView>
 
         <TextView
+            android:id="@+id/tv_gallery_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="GALLERY_COLLECTION //"
@@ -127,8 +128,40 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingBottom="100dp"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            android:visibility="visible" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_kosong"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EMPTY_COLLECTION //"
+            android:background="@android:color/black"
+            android:textColor="#ECECE6"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:textStyle="bold"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Belum ada foto di album ini.\nKlik tombol merah (+) untuk upload!"
+            android:gravity="center"
+            android:textColor="#505050"
+            android:textSize="13sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <FrameLayout

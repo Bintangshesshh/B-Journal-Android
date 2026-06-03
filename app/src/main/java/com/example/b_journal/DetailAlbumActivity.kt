@@ -1,105 +1,83 @@
 package com.example.b_journal
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import org.json.JSONObject
 
 class DetailAlbumActivity : AppCompatActivity() {
 
-    private var albumId: Int = -1
-    private lateinit var fotoAdapter: DetailFotoAdapter
-    private val daftarFotoLocal = ArrayList<Foto>()
-
     private lateinit var tvTitle: TextView
     private lateinit var tvDesc: TextView
+    private lateinit var tvGalleryLabel: TextView
+    private lateinit var rvDetailPhotos: RecyclerView
+    private lateinit var layoutKosong: LinearLayout
+
+    private lateinit var detailFotoAdapter: DetailFotoAdapter
+    private var daftarFotoLocal = ArrayList<Foto>()
+    private var albumId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_detail_album)
+
+        tvTitle = findViewById(R.id.tv_detail_title)
+        tvDesc = findViewById(R.id.tv_detail_desc)
+        tvGalleryLabel = findViewById(R.id.tv_gallery_label)
+        rvDetailPhotos = findViewById(R.id.rv_detail_photos)
+        layoutKosong = findViewById(R.id.layout_kosong)
+
+        val btnEdit = findViewById<Button>(R.id.btn_edit_album)
+        val fabAddPhoto = findViewById<Button>(R.id.fab_add_photo)
 
         albumId = intent.getIntExtra("ALBUM_ID", -1)
-        val albumOwnerId = intent.getIntExtra("ALBUM_OWNER_ID", -1)
-        val albumName = intent.getStringExtra("ALBUM_NAME") ?: "ALBUM"
-        val albumDesc = intent.getStringExtra("ALBUM_DESC") ?: ""
+        val namaAlbum = intent.getStringExtra("NAMA_ALBUM")
+        val deskripsi = intent.getStringExtra("DESKRIPSI")
 
-        val sharedPref = getSharedPreferences("user_session", Context.MODE_PRIVATE)
-        val currentLoggedInUserId = sharedPref.getInt("USER_ID", -1)
+        tvTitle.text = namaAlbum ?: "NAMA ALBUM"
+        tvDesc.text = deskripsi ?: "Tidak ada deskripsi archive."
 
-        val isOwner = (currentLoggedInUserId == albumOwnerId || currentLoggedInUserId == -1)
+        rvDetailPhotos.layoutManager = GridLayoutManager(this, 3)
+        detailFotoAdapter = DetailFotoAdapter(daftarFotoLocal)
+        rvDetailPhotos.adapter = detailFotoAdapter
 
-        if (isOwner) {
-            setContentView(R.layout.activity_detail_album)
-
-            val btnEditAlbum = findViewById<Button>(R.id.btn_edit_album)
-            val fabAddPhoto = findViewById<Button>(R.id.fab_add_photo)
-
-            btnEditAlbum.setOnClickListener {
-                val currentTitle = tvTitle.text.toString()
-                val currentDesc = tvDesc.text.toString()
-
-                val intent = Intent(this, EditDeleteAlbumActivity::class.java).apply {
-                    putExtra("ALBUM_ID", albumId)
-                    putExtra("ALBUM_TITLE", currentTitle)
-                    putExtra("ALBUM_DESC", currentDesc)
-                }
-                startActivity(intent)
+        fabAddPhoto.setOnClickListener {
+            val intent = Intent(this, UploadFotoActivity::class.java).apply {
+                putExtra("ALBUM_ID", albumId)
             }
-
-            fabAddPhoto.setOnClickListener {
-                val intent = Intent(this, UploadFotoActivity::class.java).apply {
-                    putExtra("ALBUM_ID", albumId)
-                }
-                startActivity(intent)
-            }
-        } else {
-            setContentView(R.layout.activity_detail_album_viewer)
+            startActivity(intent)
         }
 
-        tvTitle = findViewById<TextView>(R.id.tv_detail_title)
-        tvDesc = findViewById<TextView>(R.id.tv_detail_desc)
-        val rvPhotos = findViewById<RecyclerView>(R.id.rv_detail_photos)
-
-        tvTitle.text = albumName.uppercase()
-        tvDesc.text = albumDesc
-
-        rvPhotos.layoutManager = GridLayoutManager(this, 2)
-        fotoAdapter = DetailFotoAdapter(daftarFotoLocal)
-        rvPhotos.adapter = fotoAdapter
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        setIntent(intent)
-        albumId = intent.getIntExtra("ALBUM_ID", -1)
-
-        val judulBaru = intent.getStringExtra("ALBUM_NAME")
-        val deskripsiBaru = intent.getStringExtra("ALBUM_DESC")
-
-        if (!judulBaru.isNullOrEmpty()) {
-            tvTitle.text = judulBaru.uppercase()
-        }
-        if (deskripsiBaru != null) {
-            tvDesc.text = deskripsiBaru
+        btnEdit.setOnClickListener {
+            val intent = Intent(this, EditDeleteAlbumActivity::class.java).apply {
+                putExtra("ALBUM_ID", albumId)
+                putExtra("NAMA_ALBUM", tvTitle.text.toString())
+                putExtra("DESKRIPSI", tvDesc.text.toString())
+            }
+            startActivity(intent)
         }
     }
 
     override fun onResume() {
         super.onResume()
-
         if (albumId != -1) {
-            ambilKoleksiFotoDariVercel()
+            ambilDataFotoAlbum()
         }
     }
 
-    private fun ambilKoleksiFotoDariVercel() {
+    private fun ambilDataFotoAlbum() {
         val url = "https://b-journal-34na.vercel.app/api/dashboard"
+
         val request = JsonObjectRequest(
             Request.Method.GET, url, null,
             { response ->
@@ -110,33 +88,48 @@ class DetailAlbumActivity : AppCompatActivity() {
                         daftarFotoLocal.clear()
 
                         for (i in 0 until jsonArray.length()) {
-                            val item = jsonArray.getJSONObject(i)
-                            val currentAlbumId = item.getInt("AlbumID")
+                            val albumObj = jsonArray.getJSONObject(i)
+                            if (albumObj.getInt("AlbumID") == albumId) {
 
-                            if (currentAlbumId == albumId) {
-                                val namaAlbumTerbaru = item.getString("NamaAlbum")
-                                val deskripsiTerbaru = item.getString("Deskripsi")
-                                tvTitle.text = namaAlbumTerbaru.uppercase()
-                                tvDesc.text = deskripsiTerbaru
+                                tvTitle.text = albumObj.optString("NamaAlbum", tvTitle.text.toString())
+                                tvDesc.text = albumObj.optString("Deskripsi", tvDesc.text.toString())
 
-                                val fotoArray = item.optJSONArray("foto")
+                                val fotoArray = albumObj.optJSONArray("foto")
                                 if (fotoArray != null) {
                                     for (j in 0 until fotoArray.length()) {
-                                        val objFoto = fotoArray.getJSONObject(j)
-                                        val urlFoto = objFoto.optString("LokasiFile", "")
-                                        daftarFotoLocal.add(Foto(urlFoto))
+                                        val fotoObj = fotoArray.getJSONObject(j)
+                                        val lokasi = fotoObj.optString("LokasiFile", "")
+
+                                        if (lokasi.isNotEmpty()) {
+                                            daftarFotoLocal.add(Foto(lokasi))
+                                        }
                                     }
                                 }
                                 break
                             }
                         }
-                        fotoAdapter.updateData(daftarFotoLocal)
+
+                        if (daftarFotoLocal.isEmpty()) {
+                            layoutKosong.visibility = View.VISIBLE
+                            rvDetailPhotos.visibility = View.GONE
+                            tvGalleryLabel.visibility = View.GONE
+                        } else {
+                            layoutKosong.visibility = View.GONE
+                            rvDetailPhotos.visibility = View.VISIBLE
+                            tvGalleryLabel.visibility = View.VISIBLE
+                        }
+
+                        detailFotoAdapter.updateData(daftarFotoLocal)
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    Toast.makeText(this, "Gagal mengolah data foto!", Toast.LENGTH_SHORT).show()
                 }
             },
-            { error -> error.printStackTrace() }
+            { error ->
+                error.printStackTrace()
+                Toast.makeText(this, "Gagal terhubung ke server!", Toast.LENGTH_SHORT).show()
+            }
         )
         Volley.newRequestQueue(this).add(request)
     }

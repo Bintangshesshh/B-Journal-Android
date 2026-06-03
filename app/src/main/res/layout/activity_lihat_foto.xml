@@ -11,4 +11,15 @@
         android:scaleType="fitCenter"
         android:contentDescription="Foto Full Screen" />
 
+    <ImageButton
+        android:id="@+id/btn_delete_foto"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@android:drawable/ic_menu_delete"
+        android:contentDescription="Hapus Foto" />
+
 </RelativeLayout>
