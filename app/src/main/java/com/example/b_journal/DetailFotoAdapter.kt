@@ -1,5 +1,6 @@
 package com.example.b_journal
 
+import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -37,6 +38,14 @@ class DetailFotoAdapter(private var listFoto: ArrayList<Foto>) :
                 .into(holder.ivGridFoto)
         } else {
             holder.ivGridFoto.setImageResource(android.R.drawable.ic_menu_gallery)
+        }
+
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, LihatFotoActivity::class.java).apply {
+                putExtra("URL_FOTO_ASLI", foto.lokasiFile)
+            }
+            context.startActivity(intent)
         }
     }
 
