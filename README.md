@@ -1,80 +1,89 @@
-B-Journal Application System
+B-JOURNAL // PHOTO ARCHIVE SYSTEM
 
-B-Journal adalah sistem manajemen album foto digital terintegrasi yang terdiri dari aplikasi klien Android (Native Kotlin) dan layanan backend API (Next.js & TypeScript). Sistem ini mengimplementasikan arsitektur Multi-User Real-time Isolation yang menjamin keamanan data pada tingkat basis data; setiap pengguna terautentikasi memiliki ruang lingkup (scope) data terisolasi sehingga hanya dapat mengelola aset, foto, dan album miliknya sendiri tanpa risiko kebocoran data antar-pengguna.
+ ____        _=================================================
+|  _ \      | |   Multi-User Real-time Isolation System
+| |_) |     | |   Android Client (Kotlin) x Next.js API
+|  _ <  _   | |   Supabase Database & Cloud Object Storage
+| |_) || |__| |   
+|____/  \____/    EST. 2026 // BENEDIKTUS BINTANG SULISTIANTORO
+===============================================================
 
-Daftar Isi
 
-Deskripsi dan Arsitektur Sistem
+B-Journal adalah sistem manajemen album foto digital terintegrasi yang menerapkan arsitektur Multi-User Real-time Isolation. Sistem ini menjamin isolasi data mutlak pada tingkat basis data; setiap pengguna terautentikasi memiliki ruang lingkup (scope) data terisolasi secara asinkron tanpa risiko kebocoran privasi antar-akun.
 
-Fitur Utama Sistem
+■ DAFTAR ISI
 
-Teknologi yang Digunakan
+Sistem Blueprint & Alur Data
 
-Skema Basis Data (Database Schema)
+Fitur Utama
 
-Struktur dan Alur API Backend
+Teknologi & Infrastruktur
+
+Skema Basis Data (Supabase PostgreSQL)
+
+Logika Endpoint API Backend
 
 Panduan Instalasi Pengguna Akhir
 
 Panduan Pengembangan Lokal (Developer Guide)
 
-1. Deskripsi dan Arsitektur Sistem
+1. SISTEM BLUEPRINT & ALUR DATA
 
-Sistem B-Journal dirancang untuk mengatasi masalah latensi dan sinkronisasi data pada aplikasi galeri berbasis cloud. Komunikasi antara aplikasi Android dan basis data dilakukan secara tidak langsung melalui middleware RESTful API yang dideploy pada infrastruktur serverless.
+Komunikasi data antara klien Android dan basis data dikelola secara tidak langsung melalui middleware RESTful API serverless untuk mereduksi beban komputasi pada perangkat genggam:
 
-Ketika pengguna melakukan operasi data (seperti membuat album atau mengunggah foto), aplikasi Android akan mengirimkan permintaan HTTP secara asinkron. Backend API kemudian memvalidasi identitas pengguna (UserID) sebelum mengeksekusi instruksi pada basis data Supabase PostgreSQL dan memanipulasi berkas pada Object Storage.
+[ Android App ]  ◄=== (JSON Sesi: SharedPreferences)
+       │
+       ▼  (POST/GET/PUT/DELETE via Volley)
+[ Next.js API Middleware (Vercel Serverless) ]
+       │
+       ├─► [ Supabase Storage ] (Unggah Gambar Base64 ➔ Buffer Biner JPG)
+       │
+       └─► [ Supabase PostgreSQL ] (Isolasi Query via UserID Pemilik)
 
-2. Fitur Utama Sistem
 
-Autentikasi Sesi Terisolasi: Proses registrasi dan autentikasi pengguna menggunakan verifikasi berbasis server. Token sesi dan UserID disimpan secara lokal di perangkat klien menggunakan SharedPreferences.
+Setiap instruksi data yang masuk wajib menyertakan identitas aktif (currentUserId). Jika tidak lolos verifikasi kepemilikan data, sistem backend akan menolak eksekusi secara sepihak (Status 403 Access Denied).
 
-Isolasi Data Multi-Pengguna: Kueri data pada backend disaring secara ketat berdasarkan parameter pengguna aktif, mencegah akses ilegal terhadap album milik pengguna lain.
+2. FITUR UTAMA
 
-Manajemen Konten Komprehensif (CRUD): Fungsionalitas penuh untuk membuat, membaca, memperbarui, dan menghapus data album serta foto secara real-time.
+Sesi Terisolasi & Sandi Aman
 
-Optimalisasi Unggah Citra Digital: Aplikasi klien mengonversi berkas gambar lokal menjadi format Base64 dengan optimasi bitmap sampling untuk mereduksi ukuran berkas sebelum ditransmisikan via jaringan.
+Proses registrasi dan masuk menggunakan enkripsi berbasis server (scrypt hashing). Kredensial aktif aman disimpan secara lokal di ruang penyimpanan privat perangkat klien menggunakan SharedPreferences (user_session).
 
-Sinkronisasi Jaringan Asinkron: Menggunakan komponen SwipeRefreshLayout untuk memicu pembaruan data dari server secara dinamis tanpa perlu memuat ulang seluruh antarmuka aplikasi.
+Isolasi Query Dinamis
 
-3. Teknologi yang Digunakan
+Seluruh aksi manipulasi data pada dasbor langsung disaring menggunakan parameter pengguna aktif, mencegah penyusupan atau manipulasi data album milik pengguna lain.
 
-Klien Android (Frontend)
+Optimalisasi Unggah Citra Digital
 
-Bahasa Pemrograman: Kotlin 1.9+
+Aplikasi secara otomatis memotong (bitmap sampling) dan mengompres kualitas gambar lokal (JPEG, 40%) sebelum dikonversi ke format teks Base64 guna menghindari kegagalan transmisi jaringan lambat.
 
-Komponen Antarmuka: Material Components, RecyclerView (GridLayoutManager), SwipeRefreshLayout
+Sinkronisasi Antarmuka Asinkron
 
-Pustaka Jaringan: Volley HTTP Library (Manajemen antrean permintaan asinkron)
+Memanfaatkan komponen SwipeRefreshLayout untuk memperbarui data dari database cloud secara dinamis tanpa perlu memuat ulang seluruh layout aktivitas.
 
-Manajemen Sesi: SharedPreferences
+3. TEKNOLOGI & INFRASTRUKTUR
 
-Layanan API (Backend)
+CLIENT CORE    :: Android SDK 34 (Kotlin 1.9+) // Volley Network // Glide
+BACKEND CORE   :: Next.js API Routes (TypeScript) // Node.js Runtime
+CLOUD INFRA    :: Vercel Serverless Deployment // Supabase DB // Storage Buckets
 
-Framework: Next.js (API Routes)
 
-Bahasa Pemrograman: TypeScript
+4. SKEMA BASIS DATA (SUPABASE POSTGRESQL)
 
-Runtime & Hosting: Node.js / Vercel Serverless Environment
+Sistem ini beroperasi di atas mesin relasional dengan tiga tabel utama yang terikat oleh integritas referensial ketat:
 
-Basis Data & Penyimpanan (Cloud)
-
-Mesin Basis Data: Supabase PostgreSQL
-
-Penyimpanan Objek: Supabase Storage Buckets (Penyimpanan citra biner)
-
-4. Skema Basis Data (Database Schema)
-
-Sistem ini beroperasi menggunakan tiga tabel relasional dengan konfigurasi integritas referensial sebagai berikut:
-
--- 1. Tabel Profil Pengguna
+-- 1. TABEL USER (PROFIL UTAMA)
 CREATE TABLE user (
     UserID SERIAL PRIMARY KEY,
     Username VARCHAR(50) UNIQUE NOT NULL,
     Password TEXT NOT NULL,
-    NamaLengkap VARCHAR(100)
+    Email VARCHAR(100),
+    NamaLengkap VARCHAR(100),
+    Alamat TEXT,
+    FotoProfil TEXT
 );
 
--- 2. Tabel Manajemen Album
+-- 2. TABEL ALBUM (MANAJEMEN KELOMPOK FOTO)
 CREATE TABLE album (
     AlbumID SERIAL PRIMARY KEY,
     NamaAlbum VARCHAR(100) NOT NULL,
@@ -83,7 +92,7 @@ CREATE TABLE album (
     UserID INT REFERENCES user(UserID) ON DELETE CASCADE
 );
 
--- 3. Tabel Repositori Foto
+-- 3. TABEL FOTO (REPOSITORI BERKAS GAMBAR)
 CREATE TABLE foto (
     FotoID SERIAL PRIMARY KEY,
     AlbumID INT REFERENCES album(AlbumID) ON DELETE CASCADE,
@@ -95,66 +104,67 @@ CREATE TABLE foto (
 );
 
 
-5. Struktur dan Alur API Backend
+5. STRUKTUR DAN ALUR API BACKEND
 
-Layanan backend API diimplementasikan pada direktori app/api/ dengan pembagian endpoint sebagai berikut:
+API Backend dideploy secara serverless di /api/ dengan pembagian fungsi sebagai berikut:
 
-/api/auth/login & /api/auth/register: Mengelola gerbang masuk dan pembuatan akun pengguna.
+/api/auth/login & /api/auth/register : Mengelola autentikasi sesi dan pembuatan akun.
 
-/api/dashboard: Menyediakan data agregat album berdasarkan UserID spesifik.
+/api/dashboard : Menyediakan agregasi query album, pembuatan, pembaruan, dan penghapusan album secara aman berdasarkan currentUserId.
 
-/api/upload: Menangani dekodasi Base64 menjadi buffer biner, proses unggah ke Supabase Storage Bucket, serta pencatatan metadata foto ke tabel database.
+/api/upload : Menangani konversi data teks Base64 dari Android kembali menjadi berkas gambar fisik, mengunggahnya ke Supabase Storage, dan menuliskan metadatanya ke database.
 
-Logika Penanganan Unggah (POST /api/upload/route.ts)
+Penanganan Payload Defensif (POST /api/upload/route.ts)
 
-Sistem menggunakan pendekatan defensif untuk menangkap variasi parameter UserID yang dikirimkan oleh klien Android guna menghindari kesalahan tipe data pada kompilasi tingkat produksi:
+Untuk menjaga integritas data saat kompilasi production, backend menerapkan logika penampung variabel bertingkat (fallback validation) untuk menangkap data pengenal user:
 
 const { AlbumID, ImageBase64, userId, currentUserId, UserID } = body;
-// Menggabungkan variasi identitas ke dalam satu variabel valid
+
+// Validasi dinamis untuk menghindari kegagalan pencocokan tipe data di database
 const finalId = userId || currentUserId || UserID;
 
-// Eksekusi insert pada Supabase dengan fallback nilai default keamanan
+// Fallback otomatis ke default ID 1 jika Android tidak menyuplai ID valid
 UserID: finalId ? Number(finalId) : 1
 
 
-6. Panduan Instalasi Pengguna Akhir
+6. PANDUAN INSTALASI PENGGUNA AKHIR
 
-Bagi pengguna yang ingin langsung mengoperasikan aplikasi B-Journal di perangkat Android tanpa melakukan kompilasi kode:
+Untuk mengoperasikan aplikasi B-Journal langsung pada perangkat Android tanpa memerlukan perangkat lunak pengembangan:
 
-Akses halaman repositori GitHub ini melalui peramban.
+Akses repository GitHub ini via peramban komputer/ponsel Anda.
 
-Lihat pada bilah navigasi kanan, klik pada bagian Releases.
+Lihat menu Releases di bilah navigasi kanan halaman.
 
 Unduh berkas biner kompilasi terbaru: B-Journal-v1.0.apk.
 
-Pindahkan berkas .apk tersebut ke dalam direktori penyimpanan internal perangkat Android Anda.
+Salin dan buka berkas tersebut di penyimpanan lokal perangkat Android Anda.
 
-Jalankan berkas tersebut dan berikan izin instalasi untuk "Sumber Tidak Dikenal" (Allow installation from unknown sources) jika diminta oleh sistem operasi.
+Berikan izin pemasangan aplikasi dari Sumber Tidak Dikenal jika diminta oleh sistem operasi Android.
 
-Apabila muncul dialog keamanan dari Google Play Protect, pilih opsi Install Anyway (Peringatan muncul disebabkan paket aplikasi belum ditandatangani dengan sertifikat komersial Google Play Store resmi).
+Jika muncul pencegahan pemasangan oleh Google Play Protect, pilih opsi Install Anyway (Peringatan dipicu oleh belum adanya tanda tangan sertifikat komersial Google Play Developer pada berkas APK).
 
-7. Panduan Pengembangan Lokal (Developer Guide)
+7. PANDUAN PENGEMBANGAN LOKAL (DEVELOPER GUIDE)
 
 Prasyarat Lingkungan Kerja
 
-Android Studio Jellyfish (atau versi yang lebih baru)
+Android Studio Jellyfish (atau versi di atasnya)
 
 Android SDK 34 (Android 14)
 
 Java Development Kit (JDK) 17
 
-Langkah-Langkah Klonalisasi dan Sinkronisasi
+Prosedur Setup Project
 
-Buka terminal lokal Anda dan lakukan kloning repositori ini:
+Buka terminal lokal Anda dan lakukan klon repositori:
 
 git clone https://github.com/Bintangshesshh/B-Journal-Android.git
 
 
-Jalankan Android Studio, pilih opsi Open, lalu arahkan ke direktori hasil kloning tersebut.
+Buka Android Studio, klik Open, dan arahkan ke folder hasil kloning tersebut.
 
-Biarkan sistem melakukan sinkronisasi dependensi melalui Gradle secara penuh. Pastikan perangkat Anda terhubung ke jaringan internet.
+Biarkan Gradle melakukan sinkronisasi modul dependensi secara penuh hingga selesai.
 
-Konfigurasikan alamat endpoint API Anda. Sesuaikan variabel konstanta url (Base URL) pada file-file aktivitas berikut agar mengarah ke server lokal atau server produksi Anda sendiri:
+Sesuaikan konstanta url (Base URL API) pada file Kotlin berikut dengan alamat server Next.js Anda (lokal atau cloud produksi):
 
 app/src/main/java/.../MainActivity.kt
 
@@ -166,6 +176,6 @@ app/src/main/java/.../UploadFotoActivity.kt
 
 app/src/main/java/.../EditDeleteAlbumActivity.kt
 
-Hubungkan perangkat keras Android melalui fitur USB Debugging atau aktifkan Android Virtual Device (AVD).
+Hubungkan perangkat keras fisik Android Anda menggunakan metode USB Debugging atau aktifkan emulator Android Virtual Device (AVD).
 
-Eksekusi kompilasi kode dengan menekan tombol Run 'app' (Shift + F10) pada Android Studio.
+Tekan tombol Run 'app' (Shift + F10) di Android Studio untuk mulai melakukan instalasi versi pengembangan.
