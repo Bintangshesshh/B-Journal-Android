@@ -1,12 +1,16 @@
 B-JOURNAL // PHOTO ARCHIVE SYSTEM
 
- ____        _=================================================
-|  _ \      | |   Multi-User Real-time Isolation System
-| |_) |     | |   Android Client (Kotlin) x Next.js API
-|  _ <  _   | |   Supabase Database & Cloud Object Storage
-| |_) || |__| |   
-|____/  \____/    EST. 2026 // BENEDIKTUS BINTANG SULISTIANTORO
-===============================================================
+  ____        _                               _ 
+ |  _ \      | |                             | |
+ | |_) |_____| | ___  _   _ _ __ _ __   __ _| |
+ |  _ <______| |/ _ \| | | | '__| '_ \ / _` | |
+ | |_) |     | | (_) | |_| | |  | | | | (_| | |
+ |____/      |_|\___/ \__,_|_|  |_| |_|\__,_|_|
+
+ ===========================================================
+ MULTI-USER REAL-TIME ISOLATION PHOTO ARCHIVE SYSTEM
+ EST. 2026 // DEVELOPER: BENEDIKTUS BINTANG SULISTIANTORO
+ ===========================================================
 
 
 B-Journal adalah sistem manajemen album foto digital terintegrasi yang menerapkan arsitektur Multi-User Real-time Isolation. Sistem ini menjamin isolasi data mutlak pada tingkat basis data; setiap pengguna terautentikasi memiliki ruang lingkup (scope) data terisolasi secara asinkron tanpa risiko kebocoran privasi antar-akun.
@@ -176,6 +180,6 @@ app/src/main/java/.../UploadFotoActivity.kt
 
 app/src/main/java/.../EditDeleteAlbumActivity.kt
 
-Hubungkan perangkat keras fisik Android Anda menggunakan metode USB Debugging atau aktifkan emulator Android Virtual Device (AVD).
+Hubungkan perangkat keras fisik Android Anda menggunakan metode USB Debugging or aktifkan emulator Android Virtual Device (AVD).
 
 Tekan tombol Run 'app' (Shift + F10) di Android Studio untuk mulai melakukan instalasi versi pengembangan.
