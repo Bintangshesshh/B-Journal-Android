@@ -1,5 +1,6 @@
 package com.example.b_journal
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -84,10 +85,14 @@ class UploadFotoActivity : AppCompatActivity() {
     private fun uploadFotoKeVercel() {
         val url = "https://b-journal-34na.vercel.app/api/upload"
 
+        val sharedPref = getSharedPreferences("user_session", Context.MODE_PRIVATE)
+        val currentUserId = sharedPref.getInt("USER_ID", -1)
+
         val params = JSONObject()
         try {
             params.put("AlbumID", albumId)
             params.put("ImageBase64", imageBase64)
+            params.put("UserID", currentUserId)
         } catch (e: Exception) {
             e.printStackTrace()
         }
