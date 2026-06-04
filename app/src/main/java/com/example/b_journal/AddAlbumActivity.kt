@@ -1,5 +1,6 @@
 package com.example.b_journal
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -39,10 +40,14 @@ class AddAlbumActivity : AppCompatActivity() {
         buttonSubmit.text = "SAVING TO DATABASE..."
         buttonSubmit.isEnabled = false
 
+        val sharedPref = getSharedPreferences("user_session", Context.MODE_PRIVATE)
+        val currentUserId = sharedPref.getInt("USER_ID", -1)
+
         val dataKirim = JSONObject()
         try {
             dataKirim.put("title", judul)
             dataKirim.put("description", deskripsi)
+            dataKirim.put("currentUserId", currentUserId)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -82,12 +87,6 @@ class AddAlbumActivity : AppCompatActivity() {
                     finish()
                 }
             },
-
-
-
-
-
-
             { error ->
                 buttonSubmit.text = "+ Add Album"
                 buttonSubmit.isEnabled = true

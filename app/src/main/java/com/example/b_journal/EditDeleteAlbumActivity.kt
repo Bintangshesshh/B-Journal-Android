@@ -49,10 +49,14 @@ class EditDeleteAlbumActivity : AppCompatActivity() {
         val url = "https://b-journal-34na.vercel.app/api/dashboard"
         val queue = Volley.newRequestQueue(this)
 
+        val sharedPref = getSharedPreferences("user_session", Context.MODE_PRIVATE)
+        val currentUserId = sharedPref.getInt("USER_ID", -1)
+
         val dataKirim = JSONObject().apply {
             put("albumId", albumId)
             put("title", judulBaru)
             put("description", deskripsiBaru)
+            put("currentUserId", currentUserId)
         }
 
         val request = JsonObjectRequest(
@@ -63,10 +67,8 @@ class EditDeleteAlbumActivity : AppCompatActivity() {
                         Toast.makeText(this, "Album Berhasil Diubah!", Toast.LENGTH_SHORT).show()
 
                         val intent = Intent(this, DetailAlbumActivity::class.java).apply {
-                            putExtra("ALBUM_ID", albumId) // Bawa ID albumnya lagi wajib!
-
-                            flags =
-                                Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                            putExtra("ALBUM_ID", albumId)
+                            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                         }
                         startActivity(intent)
                         finish()
@@ -81,7 +83,10 @@ class EditDeleteAlbumActivity : AppCompatActivity() {
     }
 
     private fun eksekusiDelete() {
-        val url = "https://b-journal-34na.vercel.app/api/dashboard?albumId=$albumId"
+        val sharedPref = getSharedPreferences("user_session", Context.MODE_PRIVATE)
+        val currentUserId = sharedPref.getInt("USER_ID", -1)
+
+        val url = "https://b-journal-34na.vercel.app/api/dashboard?albumId=$albumId&currentUserId=$currentUserId"
         val queue = Volley.newRequestQueue(this)
 
         val request = JsonObjectRequest(
