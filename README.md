@@ -1,18 +1,5 @@
 B-JOURNAL // PHOTO ARCHIVE SYSTEM
 
-  ____        _                               _ 
- |  _ \      | |                             | |
- | |_) |_____| | ___  _   _ _ __ _ __   __ _| |
- |  _ <______| |/ _ \| | | | '__| '_ \ / _` | |
- | |_) |     | | (_) | |_| | |  | | | | (_| | |
- |____/      |_|\___/ \__,_|_|  |_| |_|\__,_|_|
-
- ===========================================================
- MULTI-USER REAL-TIME ISOLATION PHOTO ARCHIVE SYSTEM
- EST. 2026 // DEVELOPER: BENEDIKTUS BINTANG SULISTIANTORO
- ===========================================================
-
-
 B-Journal adalah sistem manajemen album foto digital terintegrasi yang menerapkan arsitektur Multi-User Real-time Isolation. Sistem ini menjamin isolasi data mutlak pada tingkat basis data; setiap pengguna terautentikasi memiliki ruang lingkup (scope) data terisolasi secara asinkron tanpa risiko kebocoran privasi antar-akun.
 
 ■ DAFTAR ISI
