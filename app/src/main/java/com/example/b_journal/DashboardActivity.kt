@@ -3,7 +3,9 @@ package com.example.b_journal
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -23,6 +25,8 @@ class DashboardActivity : AppCompatActivity() {
 
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
+    private lateinit var layoutEmptyState: LinearLayout
+
     override fun onCreate(bundle: Bundle?) {
         super.onCreate(bundle)
         setContentView(R.layout.activity_dashboard)
@@ -30,6 +34,8 @@ class DashboardActivity : AppCompatActivity() {
         val btnAddAlbum = findViewById<Button>(R.id.fab_add_album)
         val btnExit = findViewById<Button>(R.id.btn_logout)
         rvAlbums = findViewById(R.id.rv_albums)
+
+        layoutEmptyState = findViewById(R.id.layoutEmptyState)
 
         swipeRefreshLayout = findViewById(R.id.swipe_refresh)
 
@@ -104,17 +110,32 @@ class DashboardActivity : AppCompatActivity() {
 
                             daftarAlbumLocal.add(Album(id, judul, deskripsi, tanggalDibuat, urlGambar, albumOwnerId))
                         }
+
                         albumAdapter.masukkanDataBaru(daftarAlbumLocal)
+
+                        if (daftarAlbumLocal.isEmpty()) {
+                            layoutEmptyState.visibility = View.VISIBLE
+                            rvAlbums.visibility = View.GONE
+                        } else {
+                            layoutEmptyState.visibility = View.GONE
+                            rvAlbums.visibility = View.VISIBLE
+                        }
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
                     Toast.makeText(this, "Gagal memproses data server", Toast.LENGTH_SHORT).show()
+
+                    layoutEmptyState.visibility = View.VISIBLE
+                    rvAlbums.visibility = View.GONE
                 }
             },
             { error ->
                 swipeRefreshLayout.isRefreshing = false
                 error.printStackTrace()
                 Toast.makeText(this, "Eror koneksi ke server", Toast.LENGTH_SHORT).show()
+
+                layoutEmptyState.visibility = View.VISIBLE
+                rvAlbums.visibility = View.GONE
             }
         )
         requestQueue.add(request)
