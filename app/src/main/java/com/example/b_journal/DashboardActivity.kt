@@ -79,7 +79,7 @@ class DashboardActivity : AppCompatActivity() {
         val sharedPref = getSharedPreferences("user_session", Context.MODE_PRIVATE)
         val currentUserId = sharedPref.getInt("USER_ID", -1)
 
-        val url = "https://b-journal-34na.vercel.app/api/dashboard?currentUserId=$currentUserId"
+        val url = "https://b-journal.vercel.app/api/dashboard?currentUserId=$currentUserId"
 
         val request = JsonObjectRequest(
             Request.Method.GET, url, null,

@@ -83,7 +83,7 @@ class UploadFotoActivity : AppCompatActivity() {
     }
 
     private fun uploadFotoKeVercel() {
-        val url = "https://b-journal-34na.vercel.app/api/upload"
+        val url = "https://b-journal.vercel.app/api/upload"
 
         val sharedPref = getSharedPreferences("user_session", Context.MODE_PRIVATE)
         val currentUserId = sharedPref.getInt("USER_ID", -1)

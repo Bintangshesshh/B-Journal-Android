@@ -60,7 +60,7 @@ class LihatFotoActivity : AppCompatActivity() {
     private fun hapusFotoDariServer() {
         try {
             val encodedUrl = URLEncoder.encode(urlFotoAsli, "UTF-8")
-            val url = "https://b-journal-34na.vercel.app/api/upload?urlFoto=$encodedUrl"
+            val url = "https://b-journal.vercel.app/api/upload?urlFoto=$encodedUrl"
 
             val request = JsonObjectRequest(
                 Request.Method.DELETE, url, null,

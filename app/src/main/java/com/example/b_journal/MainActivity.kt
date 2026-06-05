@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun prosesLoginKeVercel(user: String, pass: String) {
-        val url = "https://b-journal-34na.vercel.app/api/auth/login"
+        val url = "https://b-journal.vercel.app/api/auth/login"
 
         val dataKirim = JSONObject()
         try {

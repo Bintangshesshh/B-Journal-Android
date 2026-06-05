@@ -46,7 +46,7 @@ class EditDeleteAlbumActivity : AppCompatActivity() {
     }
 
     private fun eksekusiUpdate(judulBaru: String, deskripsiBaru: String) {
-        val url = "https://b-journal-34na.vercel.app/api/dashboard"
+        val url = "https://b-journal.vercel.app/api/dashboard"
         val queue = Volley.newRequestQueue(this)
 
         val sharedPref = getSharedPreferences("user_session", Context.MODE_PRIVATE)
@@ -86,7 +86,7 @@ class EditDeleteAlbumActivity : AppCompatActivity() {
         val sharedPref = getSharedPreferences("user_session", Context.MODE_PRIVATE)
         val currentUserId = sharedPref.getInt("USER_ID", -1)
 
-        val url = "https://b-journal-34na.vercel.app/api/dashboard?albumId=$albumId&currentUserId=$currentUserId"
+        val url = "https://b-journal.vercel.app/api/dashboard?albumId=$albumId&currentUserId=$currentUserId"
         val queue = Volley.newRequestQueue(this)
 
         val request = JsonObjectRequest(

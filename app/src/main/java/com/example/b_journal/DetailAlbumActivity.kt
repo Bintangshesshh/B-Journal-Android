@@ -76,7 +76,7 @@ class DetailAlbumActivity : AppCompatActivity() {
     }
 
     private fun ambilDataFotoAlbum() {
-        val url = "https://b-journal-34na.vercel.app/api/dashboard"
+        val url = "https://b-journal.vercel.app/api/dashboard"
 
         val request = JsonObjectRequest(
             Request.Method.GET, url, null,

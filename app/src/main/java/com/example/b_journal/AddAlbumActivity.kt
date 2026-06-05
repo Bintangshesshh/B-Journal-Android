@@ -35,7 +35,7 @@ class AddAlbumActivity : AppCompatActivity() {
     }
 
     private fun kirimDataKeSupabase(judul: String, deskripsi: String, buttonSubmit: Button) {
-        val url = "https://b-journal-34na.vercel.app/api/dashboard"
+        val url = "https://b-journal.vercel.app/api/dashboard"
 
         buttonSubmit.text = "SAVING TO DATABASE..."
         buttonSubmit.isEnabled = false
